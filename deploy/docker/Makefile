@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-REGISTRY?=gcr.io/google_containers
+REGISTRY?=registry.cn-hangzhou.aliyuncs.com/google_containers
 ARCH?=amd64
 TEMP_DIR:=$(shell mktemp -d)
 

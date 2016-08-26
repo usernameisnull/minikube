@@ -23,7 +23,7 @@ GOARCH ?= $(shell go env GOARCH)
 BUILD_DIR ?= ./out
 ORG := k8s.io
 REPOPATH ?= $(ORG)/minikube
-BUILD_IMAGE ?= gcr.io/google_containers/kube-cross:v1.6.2-1
+BUILD_IMAGE ?= registry.cn-hangzhou.aliyuncs.com/google_containers/kube-cross:v1.6.2-1
 
 ifeq ($(IN_DOCKER),1)
 	GOPATH := /go
