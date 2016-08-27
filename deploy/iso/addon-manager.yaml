@@ -8,7 +8,7 @@ spec:
   hostNetwork: true
   containers:
   - name: kube-addon-manager
-    image: registry.cn-hangzhou.aliyuncs.com/google-containers/kube-addon-manager-amd64:v2
+    image: registry.cn-hangzhou.aliyuncs.com/google_containers/kube-addon-manager-amd64:v2
     resources:
       requests:
         cpu: 5m

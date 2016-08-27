@@ -56,8 +56,8 @@ var LogFlags = [...]string{
 }
 
 const (
-	DefaultIsoUrl    = "https://storage.googleapis.com/minikube/minikube-0.6.iso"
-	DefaultIsoShaUrl = "https://storage.googleapis.com/minikube/minikube-0.6.iso.sha256"
+	DefaultIsoUrl    = "http://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/minikube-0.6.iso"
+	DefaultIsoShaUrl = "http://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/minikube-0.6.iso.sha256"
 	DefaultMemory    = 1024
 	DefaultCPUS      = 1
 	DefaultDiskSize  = "20g"
