@@ -20,7 +20,7 @@ VERSION ?= v$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_BUILD)
 DEB_VERSION ?= $(VERSION_MAJOR).$(VERSION_MINOR)-$(VERSION_BUILD)
 INSTALL_SIZE ?= $(shell du out/minikube-windows-amd64.exe | cut -f1)
 BUILDROOT_BRANCH ?= 2017.02
-REGISTRY?=gcr.io/k8s-minikube
+REGISTRY?=registry.cn-hangzhou.aliyuncs.com/k8s-minikube
 DARWIN_BUILD_IMAGE ?= karalabe/xgo-1.7.3
 ISO_BUILD_IMAGE ?= $(REGISTRY)/buildroot-image
 
@@ -33,7 +33,7 @@ GOARCH ?= $(shell go env GOARCH)
 BUILD_DIR ?= ./out
 ORG := k8s.io
 REPOPATH ?= $(ORG)/minikube
-BUILD_IMAGE ?= gcr.io/google_containers/kube-cross:v1.7.1-0
+BUILD_IMAGE ?= registry.cn-hangzhou.aliyuncs.com/google_containers/kube-cross:v1.7.1-0
 IS_EXE ?=
 
 ifeq ($(IN_DOCKER),1)

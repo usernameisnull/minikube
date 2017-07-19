@@ -91,8 +91,8 @@ const (
 		"localkube: {{.LocalkubeStatus}}\n"
 	DefaultAddonListFormat    = "- {{.AddonName}}: {{.AddonStatus}}\n"
 	DefaultConfigViewFormat   = "- {{.ConfigKey}}: {{.ConfigValue}}\n"
-	GithubMinikubeReleasesURL = "https://storage.googleapis.com/minikube/releases.json"
-	KubernetesVersionGCSURL   = "https://storage.googleapis.com/minikube/k8s_releases.json"
+	GithubMinikubeReleasesURL = "http://minikube.oss-cn-hangzhou.aliyuncs.com/releases.json"
+	KubernetesVersionGCSURL   = "http://minikube.oss-cn-hangzhou.aliyuncs.com/k8s_releases.json"
 )
 
 var DefaultIsoUrl = fmt.Sprintf("https://storage.googleapis.com/%s/minikube-%s.iso", minikubeVersion.GetIsoPath(), minikubeVersion.GetIsoVersion())
