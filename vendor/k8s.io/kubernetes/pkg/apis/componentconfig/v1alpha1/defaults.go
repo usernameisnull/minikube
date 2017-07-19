@@ -33,7 +33,7 @@ const (
 	defaultRootDir = "/var/lib/kubelet"
 
 	// When these values are updated, also update test/e2e/framework/util.go
-	defaultPodInfraContainerImageName    = "gcr.io/google_containers/pause"
+	defaultPodInfraContainerImageName    = "registry.cn-hangzhou.aliyuncs.com/google_containers/pause"
 	defaultPodInfraContainerImageVersion = "3.0"
 	defaultPodInfraContainerImage        = defaultPodInfraContainerImageName +
 		"-" + runtime.GOARCH + ":" +
