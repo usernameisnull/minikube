@@ -34,13 +34,13 @@ spec:
     spec:
       containers:
       - name: influxdb
-        image: gcr.io/google_containers/heapster_influxdb:v0.6
+        image: registry.cn-hangzhou.aliyuncs.com/google_containers/heapster_influxdb:v0.6
         imagePullPolicy: IfNotPresent
         volumeMounts:
         - mountPath: /data
           name: influxdb-storage
       - name: grafana
-        image: gcr.io/google_containers/heapster_grafana:v2.6.0-2
+        image: registry.cn-hangzhou.aliyuncs.com/google_containers/heapster_grafana:v2.6.0-2
         imagePullPolicy: IfNotPresent
         env:
           - name: INFLUXDB_SERVICE_URL
