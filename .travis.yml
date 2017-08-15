@@ -7,6 +7,7 @@ go_import_path: k8s.io/minikube
 
 install:
   - echo "Don't run anything."
+  - echo "Testing"
 script:
   - make test
 after_success:
