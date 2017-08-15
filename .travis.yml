@@ -10,7 +10,7 @@ install:
   - echo "Don't run anything."
 script:
   - make test
-  - make cross
+  - BUILD_IN_DOCKER=y make cross
   - ls -l out
 after_success:
   - bash <(curl -s https://codecov.io/bash)
