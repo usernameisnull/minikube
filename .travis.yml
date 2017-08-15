@@ -8,8 +8,9 @@ go_import_path: k8s.io/minikube
 
 install:
   - echo "Don't run anything."
-  - echo "Testing"
 script:
   - make test
+  - make cross
+  - ls -l out
 after_success:
   - bash <(curl -s https://codecov.io/bash)
