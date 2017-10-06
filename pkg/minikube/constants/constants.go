@@ -93,14 +93,14 @@ const (
 		"cluster: {{.ClusterStatus}}\n" + "kubectl: {{.KubeconfigStatus}}\n"
 	DefaultAddonListFormat     = "- {{.AddonName}}: {{.AddonStatus}}\n"
 	DefaultConfigViewFormat    = "- {{.ConfigKey}}: {{.ConfigValue}}\n"
-	GithubMinikubeReleasesURL  = "https://storage.googleapis.com/minikube/releases.json"
-	KubernetesVersionGCSURL    = "https://storage.googleapis.com/minikube/k8s_releases.json"
+	GithubMinikubeReleasesURL  = "https://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/releases.json"
+	KubernetesVersionGCSURL    = "https://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/k8s_releases.json"
 	DefaultWait                = 20
 	DefaultInterval            = 6
 	DefaultClusterBootstrapper = "localkube"
 )
 
-var DefaultIsoUrl = fmt.Sprintf("https://storage.googleapis.com/%s/minikube-%s.iso", minikubeVersion.GetIsoPath(), minikubeVersion.GetIsoVersion())
+var DefaultIsoUrl = fmt.Sprintf("https://kubernetes.oss-cn-hangzhou.aliyuncs.com/%s/minikube-%s.iso", minikubeVersion.GetIsoPath(), minikubeVersion.GetIsoVersion())
 var DefaultIsoShaUrl = DefaultIsoUrl + ShaSuffix
 
 var DefaultKubernetesVersion = version.Get().GitVersion
@@ -113,7 +113,7 @@ func GetProfileFile(profile string) string {
 	return filepath.Join(GetMinipath(), "profiles", profile, "config.json")
 }
 
-var LocalkubeDownloadURLPrefix = "https://storage.googleapis.com/minikube/k8sReleases/"
+var LocalkubeDownloadURLPrefix = "https://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/k8sReleases/"
 var LocalkubeLinuxFilename = "localkube-linux-amd64"
 
 // DockerAPIVersion is the API version implemented by Docker running in the minikube VM.
@@ -169,43 +169,43 @@ const FileScheme = "file"
 
 var LocalkubeCachedImages = []string{
 	// Dashboard
-	"gcr.io/google_containers/kubernetes-dashboard-amd64:v1.6.3",
+	"registry.cn-hangzhou.aliyuncs.com/google_containers/kubernetes-dashboard-amd64:v1.6.3",
 
 	// DNS
-	"gcr.io/google_containers/k8s-dns-kube-dns-amd64:1.14.5",
-	"gcr.io/google_containers/k8s-dns-dnsmasq-nanny-amd64:1.14.5",
-	"gcr.io/google_containers/k8s-dns-sidecar-amd64:1.14.5",
+	"registry.cn-hangzhou.aliyuncs.com/google_containers/k8s-dns-kube-dns-amd64:1.14.5",
+	"registry.cn-hangzhou.aliyuncs.com/google_containers/k8s-dns-dnsmasq-nanny-amd64:1.14.5",
+	"registry.cn-hangzhou.aliyuncs.com/google_containers/k8s-dns-sidecar-amd64:1.14.5",
 
 	// Addon Manager
-	"gcr.io/google-containers/kube-addon-manager:v6.4-beta.2",
+	"registry.cn-hangzhou.aliyuncs.com/google_containers/kube-addon-manager:v6.4-beta.2",
 
 	// Pause
-	"gcr.io/google_containers/pause-amd64:3.0",
+	"registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.0",
 }
 
 func GetKubeadmCachedImages(version string) []string {
 	return []string{
 		// Dashboard
-		"gcr.io/google_containers/kubernetes-dashboard-amd64:v1.6.3",
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/kubernetes-dashboard-amd64:v1.6.3",
 
 		// Addon Manager
-		"gcr.io/google-containers/kube-addon-manager:v6.4-beta.2",
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/kube-addon-manager:v6.4-beta.2",
 
 		// Pause
-		"gcr.io/google_containers/pause-amd64:3.0",
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.0",
 
 		// DNS
-		"gcr.io/google_containers/k8s-dns-kube-dns-amd64:1.14.4",
-		"gcr.io/google_containers/k8s-dns-dnsmasq-nanny-amd64:1.14.4",
-		"gcr.io/google_containers/k8s-dns-sidecar-amd64:1.14.4",
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/k8s-dns-kube-dns-amd64:1.14.4",
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/k8s-dns-dnsmasq-nanny-amd64:1.14.4",
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/k8s-dns-sidecar-amd64:1.14.4",
 
 		// etcd
-		"gcr.io/google_containers/etcd-amd64:3.0.17",
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/etcd-amd64:3.0.17",
 
-		"gcr.io/google_containers/kube-proxy-amd64:" + version,
-		"gcr.io/google_containers/kube-scheduler-amd64:" + version,
-		"gcr.io/google_containers/kube-controller-manager-amd64:" + version,
-		"gcr.io/google_containers/kube-apiserver-amd64:" + version,
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy-amd64:" + version,
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler-amd64:" + version,
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/kube-controller-manager-amd64:" + version,
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/kube-apiserver-amd64:" + version,
 	}
 }
 
