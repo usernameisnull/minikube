@@ -56,8 +56,11 @@ ossutil cp out/minikube-windows-amd64.exe.sha256 oss://$BUCKET/releases/$TAGNAME
 export ISO_VERSION=$(cat Makefile | grep "ISO_VERSION ?= " | cut -c 16-)
 mkdir temp
 cd temp
+
 wget https://storage.googleapis.com/minikube/iso/minikube-$ISO_VERSION.iso
 ossutil cp minikube-$ISO_VERSION.iso oss://$BUCKET/iso/
+wget https://storage.googleapis.com/minikube/iso/minikube-$ISO_VERSION.iso.sha256
+ossutil cp minikube-$ISO_VERSION.iso.sha256 oss://$BUCKET/iso/
 
 wget https://storage.googleapis.com/minikube/releases.json
 ossutil cp releases.json oss://$BUCKET/
