@@ -93,14 +93,14 @@ const (
 		"cluster: {{.ClusterStatus}}\n" + "kubectl: {{.KubeconfigStatus}}\n"
 	DefaultAddonListFormat     = "- {{.AddonName}}: {{.AddonStatus}}\n"
 	DefaultConfigViewFormat    = "- {{.ConfigKey}}: {{.ConfigValue}}\n"
-	GithubMinikubeReleasesURL  = "https://storage.googleapis.com/minikube/releases.json"
-	KubernetesVersionGCSURL    = "https://storage.googleapis.com/minikube/k8s_releases.json"
+	GithubMinikubeReleasesURL  = "https://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/releases.json"
+	KubernetesVersionGCSURL    = "https://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/k8s_releases.json"
 	DefaultWait                = 20
 	DefaultInterval            = 6
 	DefaultClusterBootstrapper = "localkube"
 )
 
-var DefaultIsoUrl = fmt.Sprintf("https://storage.googleapis.com/%s/minikube-%s.iso", minikubeVersion.GetIsoPath(), minikubeVersion.GetIsoVersion())
+var DefaultIsoUrl = fmt.Sprintf("https://kubernetes.oss-cn-hangzhou.aliyuncs.com/%s/minikube-%s.iso", minikubeVersion.GetIsoPath(), minikubeVersion.GetIsoVersion())
 var DefaultIsoShaUrl = DefaultIsoUrl + ShaSuffix
 
 var DefaultKubernetesVersion = version.Get().GitVersion

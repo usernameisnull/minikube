@@ -52,3 +52,17 @@ ossutil cp out/minikube-darwin-amd64.sha256 oss://$BUCKET/releases/$TAGNAME/
 ossutil cp out/minikube-windows-amd64.exe oss://$BUCKET/releases/$TAGNAME/
 ossutil cp out/minikube-windows-amd64.exe.sha256 oss://$BUCKET/releases/$TAGNAME/
 
+
+export ISO_VERSION=$(cat Makefile | grep "ISO_VERSION ?= " | cut -c 16-)
+mkdir temp
+cd temp
+wget https://storage.googleapis.com/minikube/iso/minikube-$ISO_VERSION.iso
+ossutil cp minikube-$ISO_VERSION.iso oss://$BUCKET/iso/
+
+wget https://storage.googleapis.com/minikube/releases.json
+ossutil cp releases.json oss://$BUCKET/
+
+wget https://storage.googleapis.com/minikube/k8s_releases.json
+ossutil cp k8s_releases.json oss://$BUCKET/
+cd ..
+rm -fr temp
