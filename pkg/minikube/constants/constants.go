@@ -181,7 +181,7 @@ var LocalkubeCachedImages = []string{
 	"registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.0",
 
 	//Storage Provisioner
-	"registry.cn-hangzhou.aliyuncs.com/k8s-minikube/storage-provisioner:v1.8.1",
+	"registry.cn-hangzhou.aliyuncs.com/google_containers/storage-provisioner:v1.8.1",
 }
 
 func GetKubeadmCachedImages(version string) []string {
@@ -209,7 +209,7 @@ func GetKubeadmCachedImages(version string) []string {
 		"registry.cn-hangzhou.aliyuncs.com/google_containers/kube-apiserver-amd64:" + version,
 
 		//Storage Provisioner
-		"registry.cn-hangzhou.aliyuncs.com/storage-provisioner:v1.8.1",
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/storage-provisioner:v1.8.1",
 	}
 }
 
