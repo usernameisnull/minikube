@@ -33,7 +33,7 @@ export GOPATH=~/go
 export K8SRELEASE=v1.9.0
 
 # Build all binaries in docker
-export BUILD_IN_DOCKER=y
+export BUILD_IN_DOCKER="y make -j 16 all"
 
 # Sanity checks
 git status
@@ -44,7 +44,7 @@ cat Makefile | grep "VERSION_MINOR ?=" | grep $VERSION_MINOR
 cat Makefile | grep "VERSION_BUILD ?=" | grep $VERSION_BUILD
 
 # Build and upload
-make cross checksum
+make checksum
 
 ossutil cp -f out/minikube-linux-amd64 oss://$BUCKET/releases/$TAGNAME/
 ossutil cp -f out/minikube-linux-amd64.sha256 oss://$BUCKET/releases/$TAGNAME/
