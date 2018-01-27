@@ -30,7 +30,7 @@ export BUCKET=kubernetes/minikube
 export TAGNAME=v${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_BUILD}
 export DEB_VERSION=${VERSION_MAJOR}.${VERSION_MINOR}-${VERSION_BUILD}
 export GOPATH=~/go
-export K8SRELEASE=v1.8.0
+export K8SRELEASE=v1.9.0
 
 # Build all binaries in docker
 export BUILD_IN_DOCKER=y
