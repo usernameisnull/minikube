@@ -44,7 +44,7 @@ cat Makefile | grep "VERSION_BUILD ?=" | grep $VERSION_BUILD
 # Build and upload
 export BUILD_IN_DOCKER=y
 set +e
-make -j 16 all
+make -j 16 cross drivers out/localkube checksum
 set -e
 
 ossutil cp -f out/minikube-linux-amd64 oss://$BUCKET/releases/$TAGNAME/
