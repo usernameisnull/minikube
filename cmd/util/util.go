@@ -18,13 +18,11 @@ package util
 
 import (
 	"bufio"
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"net"
-	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -110,19 +108,20 @@ func MarshallError(errMsg, service, version string) ([]byte, error) {
 }
 
 func UploadError(b []byte, url string) error {
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(b))
-	if err != nil {
-		return errors.Wrap(err, "")
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return errors.Wrap(err, "")
-	} else if resp.StatusCode != 200 {
-		return errors.Errorf("Error sending error report to %s, got response code %d", url, resp.StatusCode)
-	}
+	//Ignore the upload for the inaccessible URL
+	//req, err := http.NewRequest("POST", url, bytes.NewBuffer(b))
+	//if err != nil {
+	//	return errors.Wrap(err, "")
+	//}
+	//req.Header.Set("Content-Type", "application/json")
+	//
+	//client := &http.Client{}
+	//resp, err := client.Do(req)
+	//if err != nil {
+	//	return errors.Wrap(err, "")
+	//} else if resp.StatusCode != 200 {
+	//	return errors.Errorf("Error sending error report to %s, got response code %d", url, resp.StatusCode)
+	//}
 	return nil
 }
 

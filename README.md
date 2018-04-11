@@ -129,11 +129,10 @@ the following drivers:
 
 * virtualbox
 * vmwarefusion
-* [KVM2](https://github.com/kubernetes/minikube/blob/master/docs/drivers.md#kvm2-driver)
-* [KVM (deprecated in favor of KVM2)](https://github.com/kubernetes/minikube/blob/master/docs/drivers.md#kvm-driver)
+* [KVM](https://github.com/kubernetes/minikube/blob/master/docs/drivers.md#kvm-driver)
 * [hyperkit](https://github.com/kubernetes/minikube/blob/master/docs/drivers.md#hyperkit-driver)
 * [xhyve](https://github.com/kubernetes/minikube/blob/master/docs/drivers.md#xhyve-driver)
-* [hyperv](https://github.com/kubernetes/minikube/blob/master/docs/drivers.md#hyperV-driver)
+* [Hyper-V](https://github.com/kubernetes/minikube/blob/master/docs/drivers.md#hyperV-driver)
 * none (**Linux-only**) - this driver can be used to run the Kubernetes cluster components on the host instead of in a VM. This can be useful for CI workloads which do not support nested virtualization.
 
 ```shell
@@ -147,7 +146,7 @@ Connecting to cluster...
 Setting up kubeconfig...
 Kubectl is now configured to use the cluster.
 
-$ kubectl run hello-minikube --image=k8s.gcr.io/echoserver:1.4 --port=8080
+$ kubectl run hello-minikube --image=registry.cn-hangzhou.aliyuncs.com/google_containers/echoserver:1.4 --port=8080
 deployment "hello-minikube" created
 $ kubectl expose deployment hello-minikube --type=NodePort
 service "hello-minikube" exposed
@@ -169,8 +168,6 @@ client_address=192.168.99.1
 command=GET
 real path=/
 ...
-$ kubectl delete service hello-minikube
-service "hello-minikube" deleted
 $ kubectl delete deployment hello-minikube
 deployment "hello-minikube" deleted
 $ minikube stop

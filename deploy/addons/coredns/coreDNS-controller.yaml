@@ -29,7 +29,7 @@ spec:
         effect: NoSchedule
       containers:
       - name: coredns
-        image: k8s.gcr.io/coredns:1.2.2
+        image: registry.cn-hangzhou.aliyuncs.com/google_containers/coredns:1.2.2
         imagePullPolicy: IfNotPresent
         resources:
           limits:
