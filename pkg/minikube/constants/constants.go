@@ -199,7 +199,7 @@ var LocalkubeCachedImages = []string{
 	"registry.cn-hangzhou.aliyuncs.com/google_containers/kube-addon-manager:v6.5",
 
 	// Pause
-	"registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.0",
+	"registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.1",
 
 	//Storage Provisioner
 	"registry.cn-hangzhou.aliyuncs.com/google_containers/storage-provisioner:v1.8.1",
@@ -214,12 +214,12 @@ func GetKubeadmCachedImages(version string) []string {
 		"registry.cn-hangzhou.aliyuncs.com/google_containers/kube-addon-manager:v6.5",
 
 		// Pause
-		"registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.0",
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.1",
 
 		// DNS
-		"registry.cn-hangzhou.aliyuncs.com/google_containers/k8s-dns-kube-dns-amd64:1.14.4",
-		"registry.cn-hangzhou.aliyuncs.com/google_containers/k8s-dns-dnsmasq-nanny-amd64:1.14.4",
-		"registry.cn-hangzhou.aliyuncs.com/google_containers/k8s-dns-sidecar-amd64:1.14.4",
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/k8s-dns-kube-dns-amd64:1.14.5",
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/k8s-dns-dnsmasq-nanny-amd64:1.14.5",
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/k8s-dns-sidecar-amd64:1.14.5",
 
 		// etcd
 		"registry.cn-hangzhou.aliyuncs.com/google_containers/etcd-amd64:3.0.17",
