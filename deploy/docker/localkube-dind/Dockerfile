@@ -13,6 +13,7 @@
 # limitations under the License.
 
 FROM debian:jessie
+COPY sources.list /etc/apt/sources.list
 
 ARG CNI_VERSION=v0.5.2
 
