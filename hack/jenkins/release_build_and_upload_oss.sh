@@ -40,11 +40,14 @@ cat Makefile | grep "VERSION_MAJOR ?=" | grep $VERSION_MAJOR
 cat Makefile | grep "VERSION_MINOR ?=" | grep $VERSION_MINOR
 cat Makefile | grep "VERSION_BUILD ?=" | grep $VERSION_BUILD
 
+rm -fr out
+
 # Build all binaries in docker
 # Build and upload
 export BUILD_IN_DOCKER=y
 set +e
-make -j 16 cross drivers checksum out/localkube out/minikube-installer.exe
+make -j 16 cross drivers out/localkube out/minikube-installer.exe
+make checksum
 set -e
 
 ossutil cp -f out/minikube-linux-amd64 oss://$BUCKET/releases/$TAGNAME/
@@ -57,6 +60,7 @@ ossutil cp -f out/minikube-windows-amd64.exe.sha256 oss://$BUCKET/releases/$TAGN
 ossutil cp -f out/localkube oss://$BUCKET/k8sReleases/$K8SRELEASE/localkube-linux-amd64
 ossutil cp -f out/localkube.sha256 oss://$BUCKET/k8sReleases/$K8SRELEASE/localkube-linux-amd64.sha256
 ossutil cp -f out/minikube-installer.exe oss://$BUCKET/releases/$TAGNAME/
+
 
 export ISO_VERSION=$(cat Makefile | grep "ISO_VERSION ?= " | cut -c 16-)
 rm -fr temp
