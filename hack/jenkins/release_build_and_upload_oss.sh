@@ -30,7 +30,7 @@ export BUCKET=kubernetes/minikube
 export TAGNAME=v${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_BUILD}
 export DEB_VERSION=${VERSION_MAJOR}.${VERSION_MINOR}-${VERSION_BUILD}
 export GOPATH=~/go
-export K8SRELEASE=v1.9.4
+export K8SRELEASE=v1.10.0
 
 # Sanity checks
 git status
@@ -62,6 +62,11 @@ export ISO_VERSION=$(cat Makefile | grep "ISO_VERSION ?= " | cut -c 16-)
 rm -fr temp
 mkdir temp
 cd temp
+
+wget https://storage.googleapis.com/kubernetes-release/release/$K8SRELEASE/bin/linux/amd64/kubeadm
+ossutil cp kubeadm oss://kubernetes/kubernetes-release/release/$K8SRELEASE/bin/linux/amd64/kubeadm
+wget https://storage.googleapis.com/kubernetes-release/release/$K8SRELEASE/bin/linux/amd64/kubelet
+ossutil cp kubelet oss://kubernetes/kubernetes-release/release/$K8SRELEASE/bin/linux/amd64/kubelet
 
 wget https://storage.googleapis.com/minikube/iso/minikube-$ISO_VERSION.iso
 ossutil cp minikube-$ISO_VERSION.iso oss://$BUCKET/iso/
