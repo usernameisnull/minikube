@@ -68,6 +68,11 @@ ossutil cp kubeadm oss://kubernetes/kubernetes-release/release/$K8SRELEASE/bin/l
 wget https://storage.googleapis.com/kubernetes-release/release/$K8SRELEASE/bin/linux/amd64/kubelet
 ossutil cp kubelet oss://kubernetes/kubernetes-release/release/$K8SRELEASE/bin/linux/amd64/kubelet
 
+wget https://storage.googleapis.com/kubernetes-release/release/$K8SRELEASE/bin/linux/amd64/kubeadm.sha1
+ossutil cp kubeadm.sha1 oss://kubernetes/kubernetes-release/release/$K8SRELEASE/bin/linux/amd64/kubeadm.sha1
+wget https://storage.googleapis.com/kubernetes-release/release/$K8SRELEASE/bin/linux/amd64/kubelet.sha1
+ossutil cp kubelet.sha1 oss://kubernetes/kubernetes-release/release/$K8SRELEASE/bin/linux/amd64/kubelet.sha1
+
 wget https://storage.googleapis.com/minikube/iso/minikube-$ISO_VERSION.iso
 ossutil cp minikube-$ISO_VERSION.iso oss://$BUCKET/iso/
 wget https://storage.googleapis.com/minikube/iso/minikube-$ISO_VERSION.iso.sha256
