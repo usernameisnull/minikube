@@ -13,7 +13,7 @@
 # limitations under the License.
 
 FROM debian:jessie
-
+COPY sources.list /etc/apt/sources.list
 RUN DEBIAN_FRONTEND=noninteractive apt-get update -y \
     && DEBIAN_FRONTEND=noninteractive apt-get -yy -q install \
     iptables \
