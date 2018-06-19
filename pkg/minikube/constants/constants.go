@@ -222,10 +222,10 @@ var LocalkubeCachedImages = []string{
 func GetKubeadmCachedImages(kubernetesVersionStr string) []string {
 
 	var images = []string{
-		"k8s.gcr.io/kube-proxy-amd64:" + kubernetesVersionStr,
-		"k8s.gcr.io/kube-scheduler-amd64:" + kubernetesVersionStr,
-		"k8s.gcr.io/kube-controller-manager-amd64:" + kubernetesVersionStr,
-		"k8s.gcr.io/kube-apiserver-amd64:" + kubernetesVersionStr,
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy-amd64:" + kubernetesVersionStr,
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler-amd64:" + kubernetesVersionStr,
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/kube-controller-manager-amd64:" + kubernetesVersionStr,
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/kube-apiserver-amd64:" + kubernetesVersionStr,
 	}
 
 	gt_v1_10 := semver.MustParseRange(">=1.11.0")
