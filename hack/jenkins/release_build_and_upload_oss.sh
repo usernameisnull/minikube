@@ -44,9 +44,8 @@ rm -fr out
 
 # Build all binaries in docker
 # Build and upload
-export BUILD_IN_DOCKER=y
 set +e
-make -j 16 cross drivers out/localkube out/minikube-installer.exe
+BUILD_IN_DOCKER=y make -j 16 cross out/localkube out/minikube-installer.exe
 make checksum
 set -e
 
