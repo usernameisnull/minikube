@@ -78,9 +78,7 @@ sudo /usr/bin/kubeadm alpha phase controlplane all --config {{.KubeadmConfigFile
 sudo /usr/bin/kubeadm alpha phase etcd local --config {{.KubeadmConfigFile}}
 `))
 
-var kubeadmInitTemplate = template.Must(template.New("kubeadmInitTemplate").Parse(`
-sudo docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.1 && 
-sudo docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.1 k8s.gcr.io/pause-amd64:3.1 && 
+var kubeadmInitTemplate = template.Must(template.New("kubeadmInitTemplate").Parse(loadImageScripts() + `
 sudo /usr/bin/kubeadm init --config {{.KubeadmConfigFile}} {{if .SkipPreflightChecks}}--skip-preflight-checks{{else}}{{range .Preflights}}--ignore-preflight-errors={{.}} {{end}}{{end}} &&
 sudo /usr/bin/kubeadm alpha phase addon kube-dns
 `))
