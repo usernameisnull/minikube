@@ -144,7 +144,7 @@ kubectl: {{.Kubeconfig}}
 	// DefaultCacheListFormat is the default format of cache list
 	DefaultCacheListFormat = "{{.CacheImage}}\n"
 	// GithubMinikubeReleasesURL is the URL of the minikube github releases JSON file
-	GithubMinikubeReleasesURL = "https://storage.googleapis.com/minikube/releases.json"
+	GithubMinikubeReleasesURL = "https://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/releases.json"
 	// DefaultWait is the default wait time, in seconds
 	DefaultWait = 20
 	// DefaultInterval is the default interval, in seconds
@@ -156,7 +156,7 @@ kubectl: {{.Kubeconfig}}
 )
 
 // DefaultISOURL is the default location of the minikube.iso file
-var DefaultISOURL = fmt.Sprintf("https://storage.googleapis.com/%s/minikube-%s.iso", minikubeVersion.GetISOPath(), minikubeVersion.GetISOVersion())
+var DefaultISOURL = fmt.Sprintf("https://kubernetes.oss-cn-hangzhou.aliyuncs.com/%s/minikube-%s.iso", minikubeVersion.GetISOPath(), minikubeVersion.GetISOVersion())
 
 // DefaultISOSHAURL is the default location of the minikube.iso.sha256 file
 var DefaultISOSHAURL = DefaultISOURL + SHASuffix
@@ -227,7 +227,7 @@ var ImageRepositories = map[string][]string{
 
 // GetKubernetesReleaseURL gets the location of a kubernetes client
 func GetKubernetesReleaseURL(binaryName, version, osName, archName string) string {
-	return fmt.Sprintf("https://storage.googleapis.com/kubernetes-release/release/%s/bin/%s/%s/%s", version, osName, archName, binaryName)
+	return fmt.Sprintf("https://kubernetes.oss-cn-hangzhou.aliyuncs.com/kubernetes-release/release/%s/bin/%s/%s/%s", version, osName, archName, binaryName)
 }
 
 // GetKubernetesReleaseURLSHA1 gets the location of a kubernetes client checksum
@@ -253,8 +253,8 @@ func GetKubeadmCachedBinaries() []string {
 func GetKubeadmCachedImages(imageRepository string, kubernetesVersionStr string) (string, []string) {
 	minikubeRepository := imageRepository
 	if imageRepository == "" {
-		imageRepository = "k8s.gcr.io"
-		minikubeRepository = "gcr.io/k8s-minikube"
+		imageRepository = "registry.cn-hangzhou.aliyuncs.com/google_containers"
+		minikubeRepository = "registry.cn-hangzhou.aliyuncs.com/google_containers"
 	}
 	if !strings.HasSuffix(imageRepository, "/") {
 		imageRepository += "/"
@@ -403,5 +403,5 @@ const (
 	// GvisorContainerdShimURL is the url to download gvisor-containerd-shim
 	GvisorContainerdShimURL = "https://github.com/google/gvisor-containerd-shim/releases/download/v0.0.1-rc.0/gvisor-containerd-shim-v0.0.1-rc.0.linux-amd64"
 	// GvisorURL is the url to download gvisor
-	GvisorURL = "https://storage.googleapis.com/gvisor/releases/nightly/2018-12-07/runsc"
+	GvisorURL = "https://kubernetes.oss-cn-hangzhou.aliyuncs.com/gvisor/releases/nightly/2018-12-07/runsc"
 )
