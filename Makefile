@@ -38,7 +38,7 @@ COMMIT ?= $(if $(shell git status --porcelain --untracked-files=no),"${COMMIT_NO
 
 HYPERKIT_BUILD_IMAGE 	?= karalabe/xgo-1.12.x
 # NOTE: "latest" as of 2019-08-15. kube-cross images aren't updated as often as Kubernetes
-BUILD_IMAGE 	?= k8s.gcr.io/kube-cross:v$(GO_VERSION)-1
+BUILD_IMAGE 	?= registry.cn-hangzhou.aliyuncs.com/google_containers/kube-cross:v$(GO_VERSION)-1
 ISO_BUILD_IMAGE ?= $(REGISTRY)/buildroot-image
 KVM_BUILD_IMAGE ?= $(REGISTRY)/kvm-build-image:$(GO_VERSION)
 
