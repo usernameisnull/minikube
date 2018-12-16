@@ -45,7 +45,7 @@ rm -fr out
 # Build all binaries in docker
 # Build and upload
 set +e
-BUILD_IN_DOCKER=y make -j 16 cross all out/minikube-installer.exe
+BUILD_IN_DOCKER=y make -j 16 all out/minikube-installer.exe
 make checksum
 set -e
 
@@ -56,25 +56,17 @@ ossutil cp -f out/minikube-darwin-amd64.sha256 oss://$BUCKET/releases/$TAGNAME/
 ossutil cp -f out/minikube-windows-amd64.exe oss://$BUCKET/releases/$TAGNAME/
 ossutil cp -f out/minikube-windows-amd64.exe.sha256 oss://$BUCKET/releases/$TAGNAME/
 
+
 #ossutil cp -f out/localkube oss://$BUCKET/k8sReleases/$K8SRELEASE/localkube-linux-amd64
 #ossutil cp -f out/localkube.sha256 oss://$BUCKET/k8sReleases/$K8SRELEASE/localkube-linux-amd64.sha256
 ossutil cp -f out/minikube-installer.exe oss://$BUCKET/releases/$TAGNAME/
 
+hack/jenkins/release_kubernetes_build_and_upload_oss.sh
 
 export ISO_VERSION=$(cat Makefile | grep "ISO_VERSION ?= " | cut -c 16-)
 rm -fr temp
 mkdir temp
 cd temp
-
-wget https://storage.googleapis.com/kubernetes-release/release/$K8SRELEASE/bin/linux/amd64/kubeadm
-ossutil cp kubeadm oss://kubernetes/kubernetes-release/release/$K8SRELEASE/bin/linux/amd64/kubeadm
-wget https://storage.googleapis.com/kubernetes-release/release/$K8SRELEASE/bin/linux/amd64/kubelet
-ossutil cp kubelet oss://kubernetes/kubernetes-release/release/$K8SRELEASE/bin/linux/amd64/kubelet
-
-wget https://storage.googleapis.com/kubernetes-release/release/$K8SRELEASE/bin/linux/amd64/kubeadm.sha1
-ossutil cp kubeadm.sha1 oss://kubernetes/kubernetes-release/release/$K8SRELEASE/bin/linux/amd64/kubeadm.sha1
-wget https://storage.googleapis.com/kubernetes-release/release/$K8SRELEASE/bin/linux/amd64/kubelet.sha1
-ossutil cp kubelet.sha1 oss://kubernetes/kubernetes-release/release/$K8SRELEASE/bin/linux/amd64/kubelet.sha1
 
 wget https://storage.googleapis.com/minikube/iso/minikube-$ISO_VERSION.iso
 ossutil cp minikube-$ISO_VERSION.iso oss://$BUCKET/iso/
