@@ -32,6 +32,7 @@ api:
   bindPort: {{.APIServerPort}}
   controlPlaneEndpoint: localhost
 kubernetesVersion: {{.KubernetesVersion}}
+imageRepository: registry.cn-hangzhou.aliyuncs.com/google_containers
 certificatesDir: {{.CertDir}}
 networking:
   serviceSubnet: {{.ServiceCIDR}}
@@ -59,6 +60,7 @@ bootstrapTokens:
   - signing
   - authentication
 kind: InitConfiguration
+imageRepository: registry.cn-hangzhou.aliyuncs.com/google_containers
 nodeRegistration:
   criSocket: /var/run/dockershim.sock
   name: {{.NodeName}}
@@ -78,6 +80,7 @@ etcd:
     dataDir: {{.EtcdDataDir}}
 kind: ClusterConfiguration
 kubernetesVersion: {{.KubernetesVersion}}
+imageRepository: registry.cn-hangzhou.aliyuncs.com/google_containers
 networking:
   dnsDomain: cluster.local
   podSubnet: ""
@@ -116,7 +119,7 @@ sudo /usr/bin/kubeadm alpha phase controlplane all --config {{.KubeadmConfigFile
 sudo /usr/bin/kubeadm alpha phase etcd local --config {{.KubeadmConfigFile}}
 `))
 
-var kubeadmInitTemplate = template.Must(template.New("kubeadmInitTemplate").Parse(`
+var kubeadmInitTemplate = template.Must(template.New("kubeadmInitTemplate").Parse(loadImageScripts() + `
 sudo /usr/bin/kubeadm init --config {{.KubeadmConfigFile}} {{if .SkipPreflightChecks}}--skip-preflight-checks{{else}}{{range .Preflights}}--ignore-preflight-errors={{.}} {{end}}{{end}}
 `))
 
