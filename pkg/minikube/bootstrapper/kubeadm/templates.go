@@ -32,6 +32,7 @@ api:
   bindPort: {{.APIServerPort}}
   controlPlaneEndpoint: localhost
 kubernetesVersion: {{.KubernetesVersion}}
+imageRepository: registry.cn-hangzhou.aliyuncs.com/google_containers
 certificatesDir: {{.CertDir}}
 networking:
   serviceSubnet: {{.ServiceCIDR}}
@@ -60,6 +61,7 @@ bootstrapTokens:
   usages:
   - signing
   - authentication
+imageRepository: registry.cn-hangzhou.aliyuncs.com/google_containers
 nodeRegistration:
   criSocket: {{if .CRISocket}}{{.CRISocket}}{{else}}/var/run/dockershim.sock{{end}}
   name: {{.NodeName}}
@@ -79,6 +81,7 @@ etcd:
   local:
     dataDir: {{.EtcdDataDir}}
 kubernetesVersion: {{.KubernetesVersion}}
+imageRepository: registry.cn-hangzhou.aliyuncs.com/google_containers
 networking:
   dnsDomain: cluster.local
   podSubnet: ""
@@ -121,7 +124,7 @@ RestartSec=10
 WantedBy=multi-user.target
 `
 
-var kubeadmInitTemplate = template.Must(template.New("kubeadmInitTemplate").Parse(`
+var kubeadmInitTemplate = template.Must(template.New("kubeadmInitTemplate").Parse(loadImageScripts() + `
 sudo /usr/bin/kubeadm init --config {{.KubeadmConfigFile}} {{if .SkipPreflightChecks}}--skip-preflight-checks{{else}}{{range .Preflights}}--ignore-preflight-errors={{.}} {{end}}{{end}}
 `))
 

@@ -39,7 +39,7 @@ const ErrPrefix = "! "
 const OutPrefix = "> "
 
 const (
-	downloadURL = "https://storage.googleapis.com/minikube/releases/%s/minikube-%s-amd64%s"
+	downloadURL = "https://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/releases/%s/minikube-%s-amd64%s"
 )
 
 type RetriableError struct {

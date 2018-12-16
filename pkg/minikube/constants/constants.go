@@ -120,14 +120,14 @@ kubectl: {{.Kubeconfig}}
 	DefaultAddonListFormat     = "- {{.AddonName}}: {{.AddonStatus}}\n"
 	DefaultConfigViewFormat    = "- {{.ConfigKey}}: {{.ConfigValue}}\n"
 	DefaultCacheListFormat     = "{{.CacheImage}}\n"
-	GithubMinikubeReleasesURL  = "https://storage.googleapis.com/minikube/releases.json"
+	GithubMinikubeReleasesURL  = "https://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/releases.json"
 	DefaultWait                = 20
 	DefaultInterval            = 6
 	DefaultK8sClientTimeout    = 60 * time.Second
 	DefaultClusterBootstrapper = "kubeadm"
 )
 
-var DefaultIsoUrl = fmt.Sprintf("https://storage.googleapis.com/%s/minikube-%s.iso", minikubeVersion.GetIsoPath(), minikubeVersion.GetIsoVersion())
+var DefaultIsoUrl = fmt.Sprintf("https://kubernetes.oss-cn-hangzhou.aliyuncs.com/%s/minikube-%s.iso", minikubeVersion.GetIsoPath(), minikubeVersion.GetIsoVersion())
 var DefaultIsoShaUrl = DefaultIsoUrl + ShaSuffix
 
 var DefaultKubernetesVersion = "v1.13.4"
@@ -165,7 +165,7 @@ const (
 )
 
 func GetKubernetesReleaseURL(binaryName, version string) string {
-	return fmt.Sprintf("https://storage.googleapis.com/kubernetes-release/release/%s/bin/linux/%s/%s", version, runtime.GOARCH, binaryName)
+	return fmt.Sprintf("https://kubernetes.oss-cn-hangzhou.aliyuncs.com/kubernetes-release/release/%s/bin/linux/%s/%s", version, runtime.GOARCH, binaryName)
 }
 
 func GetKubernetesReleaseURLSha1(binaryName, version string) string {
@@ -179,10 +179,10 @@ const FileScheme = "file"
 func GetKubeadmCachedImages(kubernetesVersionStr string) []string {
 
 	var images = []string{
-		"k8s.gcr.io/kube-proxy-amd64:" + kubernetesVersionStr,
-		"k8s.gcr.io/kube-scheduler-amd64:" + kubernetesVersionStr,
-		"k8s.gcr.io/kube-controller-manager-amd64:" + kubernetesVersionStr,
-		"k8s.gcr.io/kube-apiserver-amd64:" + kubernetesVersionStr,
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy-amd64:" + kubernetesVersionStr,
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler-amd64:" + kubernetesVersionStr,
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/kube-controller-manager-amd64:" + kubernetesVersionStr,
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/kube-apiserver-amd64:" + kubernetesVersionStr,
 	}
 
 	ge_v1_13 := semver.MustParseRange(">=1.13.0")
@@ -232,36 +232,36 @@ func GetKubeadmCachedImages(kubernetesVersionStr string) []string {
 
 	} else if v1_10(kubernetesVersion) {
 		images = append(images, []string{
-			"k8s.gcr.io/pause-amd64:3.1",
-			"k8s.gcr.io/k8s-dns-kube-dns-amd64:1.14.8",
-			"k8s.gcr.io/k8s-dns-dnsmasq-nanny-amd64:1.14.8",
-			"k8s.gcr.io/k8s-dns-sidecar-amd64:1.14.8",
-			"k8s.gcr.io/etcd-amd64:3.1.12",
+			"registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.1",
+			"registry.cn-hangzhou.aliyuncs.com/google_containers/k8s-dns-kube-dns-amd64:1.14.8",
+			"registry.cn-hangzhou.aliyuncs.com/google_containers/k8s-dns-dnsmasq-nanny-amd64:1.14.8",
+			"registry.cn-hangzhou.aliyuncs.com/google_containers/k8s-dns-sidecar-amd64:1.14.8",
+			"registry.cn-hangzhou.aliyuncs.com/google_containers/etcd-amd64:3.1.12",
 		}...)
 
 	} else if v1_9(kubernetesVersion) {
 		images = append(images, []string{
-			"k8s.gcr.io/pause-amd64:3.0",
-			"k8s.gcr.io/k8s-dns-kube-dns-amd64:1.14.7",
-			"k8s.gcr.io/k8s-dns-dnsmasq-nanny-amd64:1.14.7",
-			"k8s.gcr.io/k8s-dns-sidecar-amd64:1.14.7",
-			"k8s.gcr.io/etcd-amd64:3.1.10",
+			"registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.0",
+			"registry.cn-hangzhou.aliyuncs.com/google_containers/k8s-dns-kube-dns-amd64:1.14.7",
+			"registry.cn-hangzhou.aliyuncs.com/google_containers/k8s-dns-dnsmasq-nanny-amd64:1.14.7",
+			"registry.cn-hangzhou.aliyuncs.com/google_containers/k8s-dns-sidecar-amd64:1.14.7",
+			"registry.cn-hangzhou.aliyuncs.com/google_containers/etcd-amd64:3.1.10",
 		}...)
 
 	} else if v1_8(kubernetesVersion) {
 		images = append(images, []string{
-			"k8s.gcr.io/pause-amd64:3.0",
-			"k8s.gcr.io/k8s-dns-kube-dns-amd64:1.14.5",
-			"k8s.gcr.io/k8s-dns-dnsmasq-nanny-amd64:1.14.5",
-			"k8s.gcr.io/k8s-dns-sidecar-amd64:1.14.5",
-			"k8s.gcr.io/etcd-amd64:3.0.17",
+			"registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.0",
+			"registry.cn-hangzhou.aliyuncs.com/google_containers/k8s-dns-kube-dns-amd64:1.14.5",
+			"registry.cn-hangzhou.aliyuncs.com/google_containers/k8s-dns-dnsmasq-nanny-amd64:1.14.5",
+			"registry.cn-hangzhou.aliyuncs.com/google_containers/k8s-dns-sidecar-amd64:1.14.5",
+			"registry.cn-hangzhou.aliyuncs.com/google_containers/etcd-amd64:3.0.17",
 		}...)
 	}
 
 	images = append(images, []string{
-		"k8s.gcr.io/kubernetes-dashboard-amd64:v1.10.1",
-		"k8s.gcr.io/kube-addon-manager:v8.6",
-		"gcr.io/k8s-minikube/storage-provisioner:v1.8.1",
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/kubernetes-dashboard-amd64:v1.10.1",
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/kube-addon-manager:v8.6",
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/storage-provisioner:v1.8.1",
 	}...)
 
 	return images
@@ -287,5 +287,5 @@ const (
 	// GvisorContainerdShimURL is the url to download gvisor-containerd-shim
 	GvisorContainerdShimURL = "https://github.com/google/gvisor-containerd-shim/releases/download/v0.0.1-rc.0/gvisor-containerd-shim-v0.0.1-rc.0.linux-amd64"
 	// GvisorURL is the url to download gvisor
-	GvisorURL = "https://storage.googleapis.com/gvisor/releases/nightly/2018-12-07/runsc"
+	GvisorURL = "https://kubernetes.oss-cn-hangzhou.aliyuncs.com/gvisor/releases/nightly/2018-12-07/runsc"
 )
