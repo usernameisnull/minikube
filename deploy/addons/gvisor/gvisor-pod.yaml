@@ -24,7 +24,7 @@ spec:
   hostPID: true
   containers: 
     - name: gvisor
-      image: gcr.io/k8s-minikube/gvisor-addon:latest
+      image: registry.cn-hangzhou.aliyuncs.com/google_containers/gvisor-addon:latest
       securityContext:
         privileged: true
       volumeMounts:

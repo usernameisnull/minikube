@@ -249,6 +249,7 @@ api:
   bindPort: 18443
   controlPlaneEndpoint: localhost
 kubernetesVersion: v1.10.0
+imageRepository: registry.cn-hangzhou.aliyuncs.com/google_containers
 certificatesDir: /var/lib/minikube/certs/
 networking:
   serviceSubnet: 10.96.0.0/12
