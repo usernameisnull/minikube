@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-export K8SRELEASE=v1.10.8
+export K8SRELEASE=v1.13.2
 
 rm -fr temp
 mkdir temp
