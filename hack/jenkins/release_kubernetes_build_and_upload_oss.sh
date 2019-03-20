@@ -14,7 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-export K8SRELEASE=v1.13.2
+export K8SRELEASE=v1.13.4
+#export K8SRELEASE=$(curl https://storage.googleapis.com/kubernetes-release/release/stable-1.txt)
 
 rm -fr temp
 mkdir temp
