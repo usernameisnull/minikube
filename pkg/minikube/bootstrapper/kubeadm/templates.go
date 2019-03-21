@@ -61,7 +61,6 @@ bootstrapTokens:
   usages:
   - signing
   - authentication
-imageRepository: registry.cn-hangzhou.aliyuncs.com/google_containers
 nodeRegistration:
   criSocket: {{if .CRISocket}}{{.CRISocket}}{{else}}/var/run/dockershim.sock{{end}}
   name: {{.NodeName}}
