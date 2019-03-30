@@ -180,6 +180,7 @@ WantedBy=multi-user.target
 var kubeadmInitTemplate = template.Must(template.New("kubeadmInitTemplate").Parse(`
 sudo sed -i 's/k8s.gcr.io/registry.cn-hangzhou.aliyuncs.com\/google_containers/g' /etc/containerd/config.toml &&
 sudo sed -i 's/registry-1.docker.io/registry.docker-cn.com/g' /etc/containerd/config.toml &&
+sudo systemctl restart containerd &&
 sudo /usr/bin/kubeadm init --config {{.KubeadmConfigFile}} {{.ExtraOptions}} {{if .SkipPreflightChecks}}--skip-preflight-checks{{else}}{{range .Preflights}}--ignore-preflight-errors={{.}} {{end}}{{end}}
 `))
 
