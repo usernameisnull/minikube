@@ -28,9 +28,9 @@ set -e
 
 export BUCKET=kubernetes/minikube
 export TAGNAME=v${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_BUILD}
-export DEB_VERSION=${VERSION_MAJOR}.${VERSION_MINOR}-${VERSION_BUILD}
+export DEB_VERSION=${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_BUILD}
+export RPM_VERSION=${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_BUILD}
 export GOPATH=~/go
-export K8SRELEASE=v1.13.4
 
 # Sanity checks
 git status
@@ -45,7 +45,7 @@ rm -fr out
 # Build all binaries in docker
 # Build and upload
 set +e
-BUILD_IN_DOCKER=y make -j 16 all out/minikube-installer.exe
+BUILD_IN_DOCKER=y make -j 16 all out/minikube-installer.exe out/minikube_${DEB_VERSION}.deb out/minikube-${RPM_VERSION}.rpm
 make checksum
 set -e
 
