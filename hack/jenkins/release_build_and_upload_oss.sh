@@ -44,10 +44,8 @@ rm -fr out
 
 # Build all binaries in docker
 # Build and upload
-set +e
 BUILD_IN_DOCKER=y make -j 16 all out/minikube-installer.exe out/minikube_${DEB_VERSION}.deb out/minikube-${RPM_VERSION}.rpm
 make checksum
-set -e
 
 ossutil cp -f out/minikube-linux-amd64 oss://$BUCKET/releases/$TAGNAME/
 ossutil cp -f out/minikube-linux-amd64.sha256 oss://$BUCKET/releases/$TAGNAME/
@@ -57,7 +55,7 @@ ossutil cp -f out/minikube-windows-amd64.exe oss://$BUCKET/releases/$TAGNAME/
 ossutil cp -f out/minikube-windows-amd64.exe.sha256 oss://$BUCKET/releases/$TAGNAME/
 ossutil cp -f out/minikube-installer.exe oss://$BUCKET/releases/$TAGNAME/
 
-export ISO_VERSION=v${VERSION_MAJOR}.${VERSION_MINOR}.0
+export ISO_VERSION=v${VERSION_MAJOR}.${VERSION_MINOR}.1
 
 rm -fr temp
 mkdir temp
