@@ -55,7 +55,7 @@ ossutil cp -f out/minikube-windows-amd64.exe oss://$BUCKET/releases/$TAGNAME/
 ossutil cp -f out/minikube-windows-amd64.exe.sha256 oss://$BUCKET/releases/$TAGNAME/
 ossutil cp -f out/minikube-installer.exe oss://$BUCKET/releases/$TAGNAME/
 
-export ISO_VERSION=v${VERSION_MAJOR}.${VERSION_MINOR}.1
+export ISO_VERSION=v${VERSION_MAJOR}.${VERSION_MINOR}.0
 
 rm -fr temp
 mkdir temp
