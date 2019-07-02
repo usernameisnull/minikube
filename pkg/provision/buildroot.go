@@ -19,6 +19,7 @@ package provision
 import (
 	"bytes"
 	"fmt"
+	"net/url"
 	"path"
 	"path/filepath"
 	"strings"
@@ -301,7 +302,12 @@ func configureAuth(p *BuildrootProvisioner) error {
 
 	// Fix containerd runtime
 	if config.MachineConfig.ContainerRuntime != "" && len(p.EngineOptions.RegistryMirror) > 0 {
-		if _, err = p.SSHCommand(fmt.Sprintf(`sudo sed -i 's/k8s.gcr.io/registry.cn-hangzhou.aliyuncs.com\/google_containers/g' /etc/containerd/config.toml && sudo sed -i 's/registry-1.docker.io/%s/g' /etc/containerd/config.toml`, p.EngineOptions.RegistryMirror[0])); err != nil {
+		mirror := p.EngineOptions.RegistryMirror[0]
+		u, err := url.Parse(mirror)
+		if err != nil {
+			return err
+		}
+		if _, err = p.SSHCommand(fmt.Sprintf(`sudo sed -i 's/k8s.gcr.io/registry.cn-hangzhou.aliyuncs.com\/google_containers/g' /etc/containerd/config.toml && sudo sed -i 's/registry-1.docker.io/%s/g' /etc/containerd/config.toml`, u.Host)); err != nil {
 			return err
 		}
 	}
