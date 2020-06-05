@@ -34,7 +34,7 @@ const (
 
 var (
 	// BaseImage is the base image is used to spin up kic containers. it uses same base-image as kind.
-	BaseImage = fmt.Sprintf("gcr.io/k8s-minikube/kicbase:%s@sha256:%s", Version, baseImageSHA)
+	BaseImage = fmt.Sprintf("registry.cn-hangzhou.aliyuncs.com/google_containers/kicbase:%s@sha256:%s", Version, baseImageSHA)
 
 	// BaseImageFallBack1 the fall back of BaseImage in case gcr.io is not available. stored in docker hub
 	// same image is push to https://github.com/kicbase/stable
