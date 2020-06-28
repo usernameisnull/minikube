@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"k8s.io/minikube/mabing"
 	"os"
 
 	"github.com/pkg/errors"
@@ -174,7 +175,7 @@ func (c *simpleConfigLoader) LoadConfigFromFile(profileName string, miniHome ...
 	var cc ClusterConfig
 	// Move to profile package
 	path := profileFilePath(profileName, miniHome...)
-
+	mabing.Log("(c *simpleConfigLoader) LoadConfigFromFile,path = ",path)
 	if _, err := os.Stat(path); err != nil {
 		if os.IsNotExist(err) {
 			return nil, &ErrNotExist{fmt.Sprintf("cluster %q does not exist", profileName)}
@@ -200,6 +201,18 @@ func (c *simpleConfigLoader) WriteConfigToFile(profileName string, cc *ClusterCo
 		return err
 	}
 	return ioutil.WriteFile(path, contents, 0644)
+}
+
+// MultiNodeCNIConfig add default CNI config needed for multinode clusters and saves off the config
+func MultiNodeCNIConfig(cc *ClusterConfig) error {
+	if cc.KubernetesConfig.ExtraOptions.Get("pod-network-cidr", "kubeadm") == "" {
+		cc.KubernetesConfig.NetworkPlugin = "cni"
+		if err := cc.KubernetesConfig.ExtraOptions.Set(fmt.Sprintf("kubeadm.pod-network-cidr=%s", DefaultPodCIDR)); err != nil {
+			return err
+		}
+		return SaveProfile(cc.Name, cc)
+	}
+	return nil
 }
 
 // MultiNode returns true if the cluster has multiple nodes or if the request is asking for multinode

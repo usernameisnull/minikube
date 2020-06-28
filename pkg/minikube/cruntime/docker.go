@@ -86,6 +86,11 @@ func (r *Docker) SocketPath() string {
 	return r.Socket
 }
 
+// DefaultCNI returns whether to use CNI networking by default
+func (r *Docker) DefaultCNI() bool {
+	return false
+}
+
 // Available returns an error if it is not possible to use this runtime on a host
 func (r *Docker) Available() error {
 	_, err := exec.LookPath("docker")
@@ -99,8 +104,6 @@ func (r *Docker) Active() bool {
 
 // Enable idempotently enables Docker on a host
 func (r *Docker) Enable(disOthers, forceSystemd bool) error {
-	containerdWasActive := r.Init.Active("containerd")
-
 	if disOthers {
 		if err := disableOthers(r, r.Runner); err != nil {
 			glog.Warningf("disableOthers: %v", err)
@@ -111,11 +114,6 @@ func (r *Docker) Enable(disOthers, forceSystemd bool) error {
 		if err := r.forceSystemd(); err != nil {
 			return err
 		}
-		return r.Init.Restart("docker")
-	}
-
-	if containerdWasActive && !dockerBoundToContainerd(r.Runner) {
-		// Make sure to use the internal containerd
 		return r.Init.Restart("docker")
 	}
 

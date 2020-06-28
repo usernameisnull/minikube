@@ -94,7 +94,7 @@ func status() registry.State {
 		cmd.Env = append(os.Environ(), "LANG=C", "LC_ALL=C") // sudo is localized
 	}
 	o, err := cmd.Output()
-	output := strings.TrimSpace(string(o))
+	output := string(o)
 	if err == nil {
 		glog.Infof("podman version: %s", output)
 

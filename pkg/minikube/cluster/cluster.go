@@ -62,20 +62,19 @@ func Bootstrapper(api libmachine.API, bootstrapperName string, cc config.Cluster
 }
 
 // ControlPlaneBootstrapper returns the bootstrapper for the cluster's control plane
-func ControlPlaneBootstrapper(mAPI libmachine.API, cc *config.ClusterConfig, bootstrapperName string) (bootstrapper.Bootstrapper, command.Runner, error) {
+func ControlPlaneBootstrapper(mAPI libmachine.API, cc *config.ClusterConfig, bootstrapperName string) (bootstrapper.Bootstrapper, error) {
 	cp, err := config.PrimaryControlPlane(cc)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "getting primary control plane")
+		return nil, errors.Wrap(err, "getting primary control plane")
 	}
 	h, err := machine.LoadHost(mAPI, driver.MachineName(*cc, cp))
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "getting control plane host")
+		return nil, errors.Wrap(err, "getting control plane host")
 	}
 	cpr, err := machine.CommandRunner(h)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "getting control plane command runner")
+		return nil, errors.Wrap(err, "getting control plane command runner")
 	}
 
-	bs, err := Bootstrapper(mAPI, bootstrapperName, *cc, cpr)
-	return bs, cpr, err
+	return Bootstrapper(mAPI, bootstrapperName, *cc, cpr)
 }

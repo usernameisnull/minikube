@@ -133,17 +133,6 @@ var dockerEnvCmd = &cobra.Command{
 	Short: "Configure environment to use minikube's Docker daemon",
 	Long:  `Sets up docker env variables; similar to '$(docker-machine env)'.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		sh := shell.EnvConfig{
-			Shell: shell.ForceShell,
-		}
-
-		if dockerUnset {
-			if err := dockerUnsetScript(DockerEnvConfig{EnvConfig: sh}, os.Stdout); err != nil {
-				exit.WithError("Error generating unset output", err)
-			}
-			return
-		}
-
 		cname := ClusterFlagValue()
 		co := mustload.Running(cname)
 		driverName := co.CP.Host.DriverName
@@ -152,13 +141,13 @@ var dockerEnvCmd = &cobra.Command{
 			exit.UsageT(`'none' driver does not support 'minikube docker-env' command`)
 		}
 
-		if len(co.Config.Nodes) > 1 {
-			exit.WithCodeT(exit.BadUsage, `The docker-env command is incompatible with multi-node clusters. Use the 'registry' add-on: https://minikube.sigs.k8s.io/docs/handbook/registry/`)
-		}
-
 		if co.Config.KubernetesConfig.ContainerRuntime != "docker" {
 			exit.WithCodeT(exit.BadUsage, `The docker-env command is only compatible with the "docker" runtime, but this cluster was configured to use the "{{.runtime}}" runtime.`,
 				out.V{"runtime": co.Config.KubernetesConfig.ContainerRuntime})
+		}
+
+		sh := shell.EnvConfig{
+			Shell: shell.ForceShell,
 		}
 
 		if ok := isDockerActive(co.CP.Runner); !ok {
@@ -192,19 +181,18 @@ var dockerEnvCmd = &cobra.Command{
 			}
 		}
 
-		dockerPath, err := exec.LookPath("docker")
-		if err != nil {
-			glog.Warningf("Unable to find docker in path - skipping connectivity check: %v", err)
-			dockerPath = ""
+		out, err := tryDockerConnectivity("docker", ec)
+		if err != nil { // docker might be up but been loaded with wrong certs/config
+			// to fix issues like this #8185
+			glog.Warningf("couldn't connect to docker inside minikube. will try to restart dockerd service... output: %s error: %v", string(out), err)
+			mustRestartDocker(cname, co.CP.Runner)
 		}
 
-		if dockerPath != "" {
-			out, err := tryDockerConnectivity("docker", ec)
-			if err != nil { // docker might be up but been loaded with wrong certs/config
-				// to fix issues like this #8185
-				glog.Warningf("couldn't connect to docker inside minikube. will try to restart dockerd service... output: %s error: %v", string(out), err)
-				mustRestartDocker(cname, co.CP.Runner)
+		if dockerUnset {
+			if err := dockerUnsetScript(ec, os.Stdout); err != nil {
+				exit.WithError("Error generating unset output", err)
 			}
+			return
 		}
 
 		if err := dockerSetScript(ec, os.Stdout); err != nil {
@@ -280,7 +268,6 @@ func dockerEnvVarsList(ec DockerEnvConfig) []string {
 func tryDockerConnectivity(bin string, ec DockerEnvConfig) ([]byte, error) {
 	c := exec.Command(bin, "version", "--format={{.Server}}")
 	c.Env = append(os.Environ(), dockerEnvVarsList(ec)...)
-	glog.Infof("Testing Docker connectivity with: %v", c)
 	return c.CombinedOutput()
 }
 

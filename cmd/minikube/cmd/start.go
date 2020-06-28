@@ -19,6 +19,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"k8s.io/minikube/mabing"
 	"math"
 	"net"
 	"net/url"
@@ -121,7 +122,8 @@ func platform() string {
 
 // runStart handles the executes the flow of "minikube start"
 func runStart(cmd *cobra.Command, args []string) {
-	displayVersion(version.GetVersion())
+	mabing.Log("runStart",cmd.Use)
+	displayVersion(version.GetVersion()) //mabing: * minikube v1.11.0 on Ubuntu 18.04
 
 	// No need to do the update check if no one is going to see it
 	if !viper.GetBool(interactive) || !viper.GetBool(dryRun) {
@@ -141,7 +143,7 @@ func runStart(cmd *cobra.Command, args []string) {
 	if len(registryMirror) == 0 {
 		registryMirror = viper.GetStringSlice("registry_mirror")
 	}
-
+	mabing.Log("runStart.ClusterFlagValue() ",ClusterFlagValue())
 	if !config.ProfileNameValid(ClusterFlagValue()) {
 		out.WarningT("Profile name '{{.name}}' is not valid", out.V{"name": ClusterFlagValue()})
 		exit.UsageT("Only alphanumeric, dots, underscores and dashes '-' are permitted. Minimum 2 characters, starting by alphanumeric.")
@@ -155,8 +157,15 @@ func runStart(cmd *cobra.Command, args []string) {
 	ds, alts, specified := selectDriver(existing)
 	starter, err := provisionWithDriver(cmd, ds, existing)
 	if err != nil {
-		maybeExitWithAdvice(err)
-		machine.MaybeDisplayAdvice(err, viper.GetString("driver"))
+		if errors.Is(err, oci.ErrWindowsContainers) {
+			out.ErrLn("")
+			out.ErrT(out.Conflict, "Your Docker Desktop container os type is Windows but Linux is required.")
+			out.T(out.Warning, "Please change Docker settings to use Linux containers instead of Windows containers.")
+			out.T(out.Documentation, "https://minikube.sigs.k8s.io/docs/drivers/docker/#verify-docker-container-type-is-linux")
+			exit.UsageT(`You can verify your Docker container type by running:
+	{{.command}}
+		`, out.V{"command": "docker info --format '{{.OSType}}'"})
+		}
 		if specified {
 			// If the user specified a driver, don't fallback to anything else
 			exit.WithError("error provisioning host", err)
@@ -205,6 +214,7 @@ func runStart(cmd *cobra.Command, args []string) {
 func provisionWithDriver(cmd *cobra.Command, ds registry.DriverState, existing *config.ClusterConfig) (node.Starter, error) {
 	driverName := ds.Name
 	glog.Infof("selected driver: %s", driverName)
+	mabing.Log("selected driver: ", driverName)
 	validateDriver(ds, existing)
 	err := autoSetDriverOptions(cmd, driverName)
 	if err != nil {
@@ -230,7 +240,7 @@ func provisionWithDriver(cmd *cobra.Command, ds registry.DriverState, existing *
 		out.T(out.DryRun, `dry-run validation complete!`)
 		os.Exit(0)
 	}
-
+	mabing.Log("driver.IsVM(driverName): ", driver.IsVM(driverName))
 	if driver.IsVM(driverName) {
 		url, err := download.ISO(viper.GetStringSlice(isoURL), cmd.Flags().Changed(isoURL))
 		if err != nil {
@@ -369,8 +379,6 @@ func showKubectlInfo(kcs *kubeconfig.Settings, k8sVersion string, machineName st
 
 	path, err := exec.LookPath("kubectl")
 	if err != nil {
-		out.ErrT(out.Kubectl, "Kubectl not found in your path")
-		out.ErrT(out.Workaround, "You can use kubectl inside minikube. For more information, visit https://minikube.sigs.k8s.io/docs/handbook/kubectl/")
 		out.ErrT(out.Tip, "For best results, install kubectl: https://kubernetes.io/docs/tasks/tools/install-kubectl/")
 		return nil
 	}
@@ -608,20 +616,8 @@ func validateDriver(ds registry.DriverState, existing *config.ClusterConfig) {
 		exit.WithCodeT(exit.Unavailable, "The driver '{{.driver}}' is not supported on {{.os}}", out.V{"driver": name, "os": runtime.GOOS})
 	}
 
-	// if we are only downloading artifacts for a driver, we can stop validation here
-	if viper.GetBool("download-only") {
-		return
-	}
-
 	st := ds.State
 	glog.Infof("status for %s: %+v", name, st)
-
-	if st.NeedsImprovement { // warn but don't exit
-		out.ErrLn("")
-		out.WarningT("'{{.driver}}' driver reported a issue that could affect the performance.", out.V{"driver": name})
-		out.ErrT(out.Tip, "Suggestion: {{.fix}}", out.V{"fix": translate.T(st.Fix)})
-		out.ErrLn("")
-	}
 
 	if st.Error != nil {
 		out.ErrLn("")
@@ -710,7 +706,7 @@ func validateUser(drvName string) {
 	useForce := viper.GetBool(force)
 
 	if driver.NeedsRoot(drvName) && u.Uid != "0" && !useForce {
-		exit.WithCodeT(exit.Permissions, `The "{{.driver_name}}" driver requires root privileges. Please run minikube using 'sudo -E minikube start --driver={{.driver_name}}'.`, out.V{"driver_name": drvName})
+		exit.WithCodeT(exit.Permissions, `The "{{.driver_name}}" driver requires root privileges. Please run minikube using 'sudo minikube start --driver={{.driver_name}}'.`, out.V{"driver_name": drvName})
 	}
 
 	if driver.NeedsRoot(drvName) || u.Uid != "0" {
@@ -872,10 +868,10 @@ func validateFlags(cmd *cobra.Command, drvName string) {
 		}
 	}
 
-	// check that kubeadm extra args contain only allowed parameters
+	// check that kubeadm extra args contain only whitelisted parameters
 	for param := range config.ExtraOptions.AsMap().Get(bsutil.Kubeadm) {
-		if !config.ContainsParam(bsutil.KubeadmExtraArgsAllowed[bsutil.KubeadmCmdParam], param) &&
-			!config.ContainsParam(bsutil.KubeadmExtraArgsAllowed[bsutil.KubeadmConfigParam], param) {
+		if !config.ContainsParam(bsutil.KubeadmExtraArgsWhitelist[bsutil.KubeadmCmdParam], param) &&
+			!config.ContainsParam(bsutil.KubeadmExtraArgsWhitelist[bsutil.KubeadmConfigParam], param) {
 			exit.UsageT("Sorry, the kubeadm.{{.parameter_name}} parameter is currently not supported by --extra-config", out.V{"parameter_name": param})
 		}
 	}
@@ -1043,36 +1039,4 @@ func getKubernetesVersion(old *config.ClusterConfig) string {
 		out.T(out.New, "Kubernetes {{.new}} is now available. If you would like to upgrade, specify: --kubernetes-version={{.prefix}}{{.new}}", out.V{"prefix": version.VersionPrefix, "new": defaultVersion})
 	}
 	return nv
-}
-
-// maybeExitWithAdvice before exiting will try to check for different error types and provide advice
-func maybeExitWithAdvice(err error) {
-	if errors.Is(err, oci.ErrWindowsContainers) {
-		out.ErrLn("")
-		out.ErrT(out.Conflict, "Your Docker Desktop container OS type is Windows but Linux is required.")
-		out.T(out.Warning, "Please change Docker settings to use Linux containers instead of Windows containers.")
-		out.T(out.Documentation, "https://minikube.sigs.k8s.io/docs/drivers/docker/#verify-docker-container-type-is-linux")
-		exit.UsageT(`You can verify your Docker container type by running:
-{{.command}}
-	`, out.V{"command": "docker info --format '{{.OSType}}'"})
-	}
-
-	if errors.Is(err, oci.ErrCPUCountLimit) {
-		out.ErrLn("")
-		out.ErrT(out.Conflict, "{{.name}} doesn't have enough CPUs. ", out.V{"name": viper.GetString("driver")})
-		if runtime.GOOS != "linux" && viper.GetString("driver") == "docker" {
-			out.T(out.Warning, "Please consider changing your Docker Desktop's resources.")
-			out.T(out.Documentation, "https://docs.docker.com/config/containers/resource_constraints/")
-		} else {
-			cpuCount := viper.GetInt(cpus)
-			if cpuCount == 2 {
-				out.T(out.Tip, "Please ensure your system has {{.cpu_counts}} CPU cores.", out.V{"cpu_counts": viper.GetInt(cpus)})
-			} else {
-				out.T(out.Tip, "Please ensure your {{.driver_name}} system has access to {{.cpu_counts}} CPU cores or reduce the number of the specified CPUs", out.V{"driver_name": viper.GetString("driver"), "cpu_counts": viper.GetInt(cpus)})
-			}
-		}
-
-		exit.UsageT("Ensure your {{.driver_name}} system has enough CPUs. The minimum allowed is 2 CPUs.", out.V{"driver_name": viper.GetString("driver")})
-	}
-
 }

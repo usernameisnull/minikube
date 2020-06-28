@@ -121,7 +121,11 @@ func saveToTarFile(iname, rawDest string) error {
 		return errors.Wrapf(err, "nil image for %s", iname)
 	}
 
-	err = writeImage(img, dst, ref)
+	tag, err := name.NewTag(iname, name.WeakValidation)
+	if err != nil {
+		return errors.Wrap(err, "newtag")
+	}
+	err = writeImage(img, dst, tag)
 	if err != nil {
 		return err
 	}
@@ -130,7 +134,7 @@ func saveToTarFile(iname, rawDest string) error {
 	return nil
 }
 
-func writeImage(img v1.Image, dst string, ref name.Reference) error {
+func writeImage(img v1.Image, dst string, tag name.Tag) error {
 	glog.Infoln("opening: ", dst)
 	f, err := ioutil.TempFile(filepath.Dir(dst), filepath.Base(dst)+".*.tmp")
 	if err != nil {
@@ -147,7 +151,7 @@ func writeImage(img v1.Image, dst string, ref name.Reference) error {
 		}
 	}()
 
-	err = tarball.Write(ref, img, f)
+	err = tarball.Write(tag, img, f)
 	if err != nil {
 		return errors.Wrap(err, "write")
 	}

@@ -34,9 +34,7 @@ import (
 	mlog "github.com/docker/machine/libmachine/log"
 
 	"github.com/golang/glog"
-	"github.com/google/slowjam/pkg/stacklog"
 	"github.com/pkg/profile"
-
 	"k8s.io/minikube/cmd/minikube/cmd"
 	"k8s.io/minikube/pkg/minikube/constants"
 	"k8s.io/minikube/pkg/minikube/machine"
@@ -56,9 +54,6 @@ var (
 func main() {
 	bridgeLogMessages()
 	defer glog.Flush()
-
-	s := stacklog.MustStartFromEnv("STACKLOG_PATH")
-	defer s.Stop()
 
 	if os.Getenv(minikubeEnableProfile) == "1" {
 		defer profile.Start(profile.TraceProfile).Stop()

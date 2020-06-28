@@ -22,7 +22,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/google/go-cmp/cmp"
 	"github.com/pmezard/go-difflib/difflib"
 	"k8s.io/minikube/pkg/minikube/config"
 	"k8s.io/minikube/pkg/minikube/constants"
@@ -241,24 +240,9 @@ func TestGenerateKubeadmYAML(t *testing.T) {
 					t.Fatalf("diff error: %v", err)
 				}
 				if diff != "" {
-					t.Errorf("unexpected diff:\n%s\n", diff)
+					t.Errorf("unexpected diff:\n%s\n===== [RAW OUTPUT] =====\n%s", diff, got)
 				}
 			})
 		}
-	}
-}
-
-func TestEtcdExtraArgs(t *testing.T) {
-	expected := map[string]string{
-		"key": "value",
-	}
-	extraOpts := append(getExtraOpts(), config.ExtraOption{
-		Component: Etcd,
-		Key:       "key",
-		Value:     "value",
-	})
-	actual := etcdExtraArgs(extraOpts)
-	if diff := cmp.Diff(expected, actual); diff != "" {
-		t.Errorf("machines mismatch (-want +got):\n%s", diff)
 	}
 }

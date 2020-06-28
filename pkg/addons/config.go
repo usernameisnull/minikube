@@ -28,13 +28,6 @@ type Addon struct {
 	callbacks   []setFn
 }
 
-// addonPodLabels holds the pod label that will be used to verify if the addon is enabled
-var addonPodLabels = map[string]string{
-	"ingress":  "app.kubernetes.io/name=ingress-nginx",
-	"registry": "kubernetes.io/minikube-addons=registry",
-	"gvisor":   "kubernetes.io/minikube-addons=gvisor",
-}
-
 // Addons is a list of all addons
 var Addons = []*Addon{
 	{
@@ -62,7 +55,7 @@ var Addons = []*Addon{
 		name:        "gvisor",
 		set:         SetBool,
 		validations: []setFn{IsRuntimeContainerd},
-		callbacks:   []setFn{enableOrDisableAddon, verifyAddonStatus},
+		callbacks:   []setFn{enableOrDisableAddon},
 	},
 	{
 		name:      "helm-tiller",
@@ -72,7 +65,7 @@ var Addons = []*Addon{
 	{
 		name:      "ingress",
 		set:       SetBool,
-		callbacks: []setFn{enableOrDisableAddon, verifyAddonStatus},
+		callbacks: []setFn{enableOrDisableAddon},
 	},
 	{
 		name:      "ingress-dns",
@@ -90,14 +83,8 @@ var Addons = []*Addon{
 		callbacks: []setFn{enableOrDisableAddon},
 	},
 	{
-		name:      "kubevirt",
-		set:       SetBool,
-		callbacks: []setFn{enableOrDisableAddon},
-	},
-	{
-		name:      "logviewer",
-		set:       SetBool,
-		callbacks: []setFn{enableOrDisableAddon},
+		name: "logviewer",
+		set:  SetBool,
 	},
 	{
 		name:      "metrics-server",
@@ -122,7 +109,7 @@ var Addons = []*Addon{
 	{
 		name:      "registry",
 		set:       SetBool,
-		callbacks: []setFn{enableOrDisableAddon, verifyAddonStatus},
+		callbacks: []setFn{enableOrDisableAddon},
 	},
 	{
 		name:      "registry-creds",

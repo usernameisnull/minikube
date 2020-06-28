@@ -93,5 +93,4 @@ const (
 	WaitingPods
 	Warning
 	Workaround
-	CNI
 )

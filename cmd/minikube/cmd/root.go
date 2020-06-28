@@ -19,6 +19,7 @@ package cmd
 import (
 	goflag "flag"
 	"fmt"
+	"k8s.io/minikube/mabing"
 	"os"
 	"runtime"
 	"strings"
@@ -47,6 +48,12 @@ var dirs = [...]string{
 	localpath.MakeMiniPath("addons"),
 	localpath.MakeMiniPath("files"),
 	localpath.MakeMiniPath("logs"),
+}
+
+var viperWhiteList = []string{
+	"alsologtostderr",
+	"log_dir",
+	"v",
 }
 
 // RootCmd represents the base command when called without any subcommands
@@ -81,6 +88,7 @@ func Execute() {
 		})
 
 		c.SetUsageTemplate(usageTemplate())
+		mabing.Log("子命令: ",c.Use)
 	}
 	RootCmd.Short = translate.T(RootCmd.Short)
 	RootCmd.Long = translate.T(RootCmd.Long)
@@ -91,6 +99,7 @@ func Execute() {
 	if runtime.GOOS != "windows" {
 		// add minikube binaries to the path
 		targetDir := localpath.MakeMiniPath("bin")
+		mabing.Log("targetDir: ",targetDir)
 		addToPath(targetDir)
 	}
 
@@ -142,7 +151,7 @@ func usageTemplate() string {
 // Handle config values for flags used in external packages (e.g. glog)
 // by setting them directly, using values from viper when not passed in as args
 func setFlagsUsingViper() {
-	for _, config := range []string{"alsologtostderr", "log_dir", "v"} {
+	for _, config := range viperWhiteList {
 		var a = pflag.Lookup(config)
 		viper.SetDefault(a.Name, a.DefValue)
 		// If the flag is set, override viper value

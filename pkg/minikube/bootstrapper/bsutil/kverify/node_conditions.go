@@ -26,8 +26,6 @@ import (
 	v1 "k8s.io/api/core/v1"
 	meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
-	kconst "k8s.io/kubernetes/cmd/kubeadm/app/constants"
-	"k8s.io/minikube/pkg/util/retry"
 )
 
 // NodeCondition represents a favorable or unfavorable node condition.
@@ -104,17 +102,9 @@ func NodePressure(cs *kubernetes.Clientset) error {
 		glog.Infof("duration metric: took %s to run NodePressure ...", time.Since(start))
 	}()
 
-	var ns *v1.NodeList
-	var err error
-
-	listNodes := func() error {
-		ns, err = cs.CoreV1().Nodes().List(meta.ListOptions{})
-		return err
-	}
-
-	err = retry.Expo(listNodes, kconst.APICallRetryInterval, 2*time.Minute)
+	ns, err := cs.CoreV1().Nodes().List(meta.ListOptions{})
 	if err != nil {
-		return errors.Wrap(err, "list nodes retry")
+		return errors.Wrap(err, "list nodes")
 	}
 
 	for _, n := range ns.Items {

@@ -33,9 +33,6 @@ var addonsDisableCmd = &cobra.Command{
 		}
 
 		addon := args[0]
-		if addon == "heapster" {
-			exit.WithCodeT(exit.Unavailable, "The heapster addon is depreciated. please try to disable metrics-server instead")
-		}
 		err := addons.SetAndSave(ClusterFlagValue(), addon, "false")
 		if err != nil {
 			exit.WithError("disable failed", err)

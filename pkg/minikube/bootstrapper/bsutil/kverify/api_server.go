@@ -40,7 +40,6 @@ import (
 	"k8s.io/minikube/pkg/minikube/command"
 	"k8s.io/minikube/pkg/minikube/config"
 	"k8s.io/minikube/pkg/minikube/cruntime"
-	"k8s.io/minikube/pkg/util/retry"
 )
 
 // WaitForAPIServerProcess waits for api server to be healthy returns error if it doesn't
@@ -94,7 +93,7 @@ func WaitForHealthyAPIServer(r cruntime.Manager, bs bootstrapper.Bootstrapper, c
 			time.Sleep(kconst.APICallRetryInterval * 5)
 		}
 
-		status, err := apiServerHealthzNow(hostname, port)
+		status, err := apiServerHealthz(hostname, port)
 		if err != nil {
 			glog.Warningf("status: %v", err)
 			return false, nil
@@ -188,34 +187,13 @@ func APIServerStatus(cr command.Runner, hostname string, port int) (state.State,
 	return apiServerHealthz(hostname, port)
 }
 
-// apiServerHealthz checks apiserver in a patient and tolerant manner
+// apiServerHealthz hits the /healthz endpoint and returns libmachine style state.State
 func apiServerHealthz(hostname string, port int) (state.State, error) {
-	var st state.State
-	var err error
-
-	check := func() error {
-		// etcd gets upset sometimes and causes healthz to report a failure. Be tolerant of it.
-		st, err = apiServerHealthzNow(hostname, port)
-		if err != nil {
-			return err
-		}
-		if st != state.Running {
-			return fmt.Errorf("state is %q", st)
-		}
-		return nil
-	}
-
-	err = retry.Local(check, 8*time.Second)
-	return st, err
-}
-
-// apiServerHealthzNow hits the /healthz endpoint and returns libmachine style state.State
-func apiServerHealthzNow(hostname string, port int) (state.State, error) {
 	url := fmt.Sprintf("https://%s/healthz", net.JoinHostPort(hostname, fmt.Sprint(port)))
 	glog.Infof("Checking apiserver healthz at %s ...", url)
 	// To avoid: x509: certificate signed by unknown authority
 	tr := &http.Transport{
-		Proxy:           nil, // Avoid using a proxy to speak to a local host
+		Proxy:           nil, // To avoid connectiv issue if http(s)_proxy is set.
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 	client := &http.Client{Transport: tr}
