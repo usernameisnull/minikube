@@ -19,6 +19,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"k8s.io/minikube/mabing"
 	"math"
 	"net"
 	"net/url"
@@ -121,7 +122,8 @@ func platform() string {
 
 // runStart handles the executes the flow of "minikube start"
 func runStart(cmd *cobra.Command, args []string) {
-	displayVersion(version.GetVersion())
+	mabing.Log("runStart",cmd.Use)
+	displayVersion(version.GetVersion()) //mabing: * minikube v1.11.0 on Ubuntu 18.04
 
 	// No need to do the update check if no one is going to see it
 	if !viper.GetBool(interactive) || !viper.GetBool(dryRun) {
@@ -141,7 +143,7 @@ func runStart(cmd *cobra.Command, args []string) {
 	if len(registryMirror) == 0 {
 		registryMirror = viper.GetStringSlice("registry_mirror")
 	}
-
+	mabing.Log("runStart.ClusterFlagValue() ",ClusterFlagValue())
 	if !config.ProfileNameValid(ClusterFlagValue()) {
 		out.WarningT("Profile name '{{.name}}' is not valid", out.V{"name": ClusterFlagValue()})
 		exit.UsageT("Only alphanumeric, dots, underscores and dashes '-' are permitted. Minimum 2 characters, starting by alphanumeric.")
@@ -212,6 +214,7 @@ func runStart(cmd *cobra.Command, args []string) {
 func provisionWithDriver(cmd *cobra.Command, ds registry.DriverState, existing *config.ClusterConfig) (node.Starter, error) {
 	driverName := ds.Name
 	glog.Infof("selected driver: %s", driverName)
+	mabing.Log("selected driver: ", driverName)
 	validateDriver(ds, existing)
 	err := autoSetDriverOptions(cmd, driverName)
 	if err != nil {
@@ -237,7 +240,7 @@ func provisionWithDriver(cmd *cobra.Command, ds registry.DriverState, existing *
 		out.T(out.DryRun, `dry-run validation complete!`)
 		os.Exit(0)
 	}
-
+	mabing.Log("driver.IsVM(driverName): ", driver.IsVM(driverName))
 	if driver.IsVM(driverName) {
 		url, err := download.ISO(viper.GetStringSlice(isoURL), cmd.Flags().Changed(isoURL))
 		if err != nil {

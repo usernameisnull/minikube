@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"k8s.io/minikube/mabing"
 	"os"
 
 	"github.com/pkg/errors"
@@ -174,7 +175,7 @@ func (c *simpleConfigLoader) LoadConfigFromFile(profileName string, miniHome ...
 	var cc ClusterConfig
 	// Move to profile package
 	path := profileFilePath(profileName, miniHome...)
-
+	mabing.Log("(c *simpleConfigLoader) LoadConfigFromFile,path = ",path)
 	if _, err := os.Stat(path); err != nil {
 		if os.IsNotExist(err) {
 			return nil, &ErrNotExist{fmt.Sprintf("cluster %q does not exist", profileName)}

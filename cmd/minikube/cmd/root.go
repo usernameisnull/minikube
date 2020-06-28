@@ -19,6 +19,7 @@ package cmd
 import (
 	goflag "flag"
 	"fmt"
+	"k8s.io/minikube/mabing"
 	"os"
 	"runtime"
 	"strings"
@@ -87,6 +88,7 @@ func Execute() {
 		})
 
 		c.SetUsageTemplate(usageTemplate())
+		mabing.Log("子命令: ",c.Use)
 	}
 	RootCmd.Short = translate.T(RootCmd.Short)
 	RootCmd.Long = translate.T(RootCmd.Long)
@@ -97,6 +99,7 @@ func Execute() {
 	if runtime.GOOS != "windows" {
 		// add minikube binaries to the path
 		targetDir := localpath.MakeMiniPath("bin")
+		mabing.Log("targetDir: ",targetDir)
 		addToPath(targetDir)
 	}
 
