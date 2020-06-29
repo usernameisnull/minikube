@@ -18,7 +18,6 @@ package node
 
 import (
 	"fmt"
-	"k8s.io/minikube/mabing"
 	"net"
 	"os"
 	"os/exec"
@@ -26,6 +25,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"k8s.io/minikube/mabing"
 
 	"github.com/blang/semver"
 	"github.com/docker/machine/libmachine"
@@ -189,7 +190,7 @@ func Start(starter Starter, apiServer bool) (*kubeconfig.Settings, error) {
 func Provision(cc *config.ClusterConfig, n *config.Node, apiServer bool) (command.Runner, bool, libmachine.API, *host.Host, error) {
 
 	name := driver.MachineName(*cc, *n)
-	if apiServer {
+	if apiServer { // true
 		out.T(out.ThumbsUp, "Starting control plane node {{.name}} in cluster {{.cluster}}", out.V{"name": name, "cluster": cc.Name})
 	} else {
 		out.T(out.ThumbsUp, "Starting node {{.name}} in cluster {{.cluster}}", out.V{"name": name, "cluster": cc.Name})

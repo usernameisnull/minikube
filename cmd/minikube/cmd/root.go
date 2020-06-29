@@ -19,10 +19,11 @@ package cmd
 import (
 	goflag "flag"
 	"fmt"
-	"k8s.io/minikube/mabing"
 	"os"
 	"runtime"
 	"strings"
+
+	"k8s.io/minikube/mabing"
 
 	"github.com/golang/glog"
 	"github.com/spf13/cobra"
@@ -69,7 +70,7 @@ var RootCmd = &cobra.Command{
 		}
 
 		logDir := pflag.Lookup("log_dir")
-		mabing.Log("logDir = ", logDir.Value, "logDir.Changed = ", logDir.Changed)
+		mabing.Log("mabing, logDir = ", logDir.Value, "logDir.Changed = ", logDir.Changed)
 		if !logDir.Changed {
 			if err := logDir.Value.Set(localpath.MakeMiniPath("logs")); err != nil {
 				exit.WithError("logdir set failed", err)
@@ -98,7 +99,7 @@ func Execute() {
 	if runtime.GOOS != "windows" {
 		// add minikube binaries to the path
 		targetDir := localpath.MakeMiniPath("bin") // targetDir="/root/.minikube/bin"
-		mabing.Log("targetDir: ",targetDir)
+		mabing.Log("mabing, targetDir: ", targetDir)
 		addToPath(targetDir)
 	}
 
@@ -246,7 +247,7 @@ func init() {
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
 	configPath := localpath.ConfigFile()
-	mabing.Log("initConfig(), viper的配置文件: ", configPath) // /root/.minikube/profiles/minikube/config.json
+	mabing.Log("mabing, initConfig(), viper的配置文件: ", configPath) // /root/.minikube/profiles/minikube/config.json
 	viper.SetConfigFile(configPath)
 	viper.SetConfigType("json")
 	if err := viper.ReadInConfig(); err != nil {
