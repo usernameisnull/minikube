@@ -17,7 +17,6 @@ limitations under the License.
 package localpath
 
 import (
-	"k8s.io/minikube/mabing"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -39,11 +38,9 @@ func ConfigFile() string {
 
 // MiniPath returns the path to the user's minikube dir
 func MiniPath() string {
-	minikubeHomeEnv := os.Getenv(MinikubeHome)
-	mabing.Log("MiniPath(), minikubeHomeEnv = ", minikubeHomeEnv)
-	mabing.Log("MiniPath(), homedir.HomeDir() = ", homedir.HomeDir())
+	minikubeHomeEnv := os.Getenv(MinikubeHome) // minikubeHomeEnv=""
 	if minikubeHomeEnv == "" {
-		return filepath.Join(homedir.HomeDir(), ".minikube")
+		return filepath.Join(homedir.HomeDir(), ".minikube") // homedir.HomeDir() = "/root"
 	}
 	if filepath.Base(minikubeHomeEnv) == ".minikube" {
 		return minikubeHomeEnv

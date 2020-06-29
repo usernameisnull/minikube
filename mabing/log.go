@@ -1,7 +1,5 @@
 package mabing
 
-import "fmt"
+import "github.com/golang/glog"
 
-func Log(a ...interface{}){
-	fmt.Println("mabing: ", a)
-}
+var Log = glog.Infoln

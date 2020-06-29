@@ -18,6 +18,7 @@ package node
 
 import (
 	"fmt"
+	"k8s.io/minikube/mabing"
 	"net"
 	"os"
 	"os/exec"
@@ -193,7 +194,7 @@ func Provision(cc *config.ClusterConfig, n *config.Node, apiServer bool) (comman
 	} else {
 		out.T(out.ThumbsUp, "Starting node {{.name}} in cluster {{.cluster}}", out.V{"name": name, "cluster": cc.Name})
 	}
-
+	mabing.Log("driver.IsKIC(cc.Driver) = ", driver.IsKIC(cc.Driver), "driver.BareMetal(cc.Driver) = ", driver.BareMetal(cc.Driver))
 	if driver.IsKIC(cc.Driver) {
 		beginDownloadKicArtifacts(&kicGroup, cc)
 	}

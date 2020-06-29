@@ -50,7 +50,7 @@ var dirs = [...]string{
 	localpath.MakeMiniPath("logs"),
 }
 
-var viperWhiteList = []string{
+var viperWhiteList = []string{ //mabing: 这个就是glog的几个选项,minikube的每个命令都可以带上这几个选项
 	"alsologtostderr",
 	"log_dir",
 	"v",
@@ -69,6 +69,7 @@ var RootCmd = &cobra.Command{
 		}
 
 		logDir := pflag.Lookup("log_dir")
+		mabing.Log("logDir = ", logDir.Value, "logDir.Changed = ", logDir.Changed)
 		if !logDir.Changed {
 			if err := logDir.Value.Set(localpath.MakeMiniPath("logs")); err != nil {
 				exit.WithError("logdir set failed", err)
@@ -86,9 +87,7 @@ func Execute() {
 		c.Flags().VisitAll(func(flag *pflag.Flag) {
 			flag.Usage = translate.T(flag.Usage)
 		})
-
 		c.SetUsageTemplate(usageTemplate())
-		mabing.Log("子命令: ",c.Use)
 	}
 	RootCmd.Short = translate.T(RootCmd.Short)
 	RootCmd.Long = translate.T(RootCmd.Long)
@@ -98,7 +97,7 @@ func Execute() {
 
 	if runtime.GOOS != "windows" {
 		// add minikube binaries to the path
-		targetDir := localpath.MakeMiniPath("bin")
+		targetDir := localpath.MakeMiniPath("bin") // targetDir="/root/.minikube/bin"
 		mabing.Log("targetDir: ",targetDir)
 		addToPath(targetDir)
 	}
@@ -247,6 +246,7 @@ func init() {
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
 	configPath := localpath.ConfigFile()
+	mabing.Log("initConfig(), viper的配置文件: ", configPath) // /root/.minikube/profiles/minikube/config.json
 	viper.SetConfigFile(configPath)
 	viper.SetConfigType("json")
 	if err := viper.ReadInConfig(); err != nil {

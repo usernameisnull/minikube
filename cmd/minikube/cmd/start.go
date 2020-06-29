@@ -122,7 +122,7 @@ func platform() string {
 
 // runStart handles the executes the flow of "minikube start"
 func runStart(cmd *cobra.Command, args []string) {
-	mabing.Log("runStart",cmd.Use)
+	mabing.Log("runStart(), cmd = ",cmd.Use)
 	displayVersion(version.GetVersion()) //mabing: * minikube v1.11.0 on Ubuntu 18.04
 
 	// No need to do the update check if no one is going to see it
