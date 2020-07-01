@@ -102,7 +102,7 @@ func PreloadExists(k8sVersion, containerRuntime string, forcePreload ...bool) bo
 		return true
 	}
 	url := remoteTarballURL(k8sVersion, containerRuntime)
-	mabing.Log("mabing, targetPath = ", targetPath, "url = ", url)
+	mabing.Logln("mabing, targetPath = ", targetPath, "url = ", url)
 	resp, err := http.Head(url)
 	if err != nil {
 		glog.Warningf("%s fetch error: %v", url, err)

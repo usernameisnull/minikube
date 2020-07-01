@@ -136,9 +136,9 @@ type ListOptions struct {
 func New(c Config) (Manager, error) {
 	sm := sysinit.New(c.Runner)
 	if sm == nil {
-		mabing.Log("mabing, New(c Config), sm = nil")
+		mabing.Logln("mabing, New(c Config), sm = nil")
 	} else {
-		mabing.Log("mabing, New(c Config), sm = ", fmt.Sprintf("%+v", sm.Name()))
+		mabing.Logln("mabing, New(c Config), sm = ", fmt.Sprintf("%+v", sm.Name()))
 	}
 	switch c.Type {
 	case "", "docker":

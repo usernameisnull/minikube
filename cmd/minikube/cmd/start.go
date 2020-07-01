@@ -123,12 +123,14 @@ func platform() string {
 
 // runStart handles the executes the flow of "minikube start"
 func runStart(cmd *cobra.Command, args []string) {
-	mabing.Log("mabing, runStart(), cmd = ", cmd.Use)
+	mabing.Logln(mabing.GenerateLongSignStart("runStart()"))
+	mabing.Logln("mabing, runStart(), cmd = ", cmd.Use)
 	displayVersion(version.GetVersion()) //mabing: * minikube v1.11.0 on Ubuntu 18.04
 
 	// No need to do the update check if no one is going to see it
 	if !viper.GetBool(interactive) || !viper.GetBool(dryRun) {
 		// Avoid blocking execution on optional HTTP fetches
+		mabing.Logln("mabing, runStart(), go notify.MaybePrintUpdateTextFromGithub() ")
 		go notify.MaybePrintUpdateTextFromGithub()
 	}
 
@@ -144,20 +146,20 @@ func runStart(cmd *cobra.Command, args []string) {
 	if len(registryMirror) == 0 {
 		registryMirror = viper.GetStringSlice("registry_mirror")
 	}
-	mabing.Log("mabing, runStart.ClusterFlagValue() ", ClusterFlagValue())
+	mabing.Logf("mabing, runStart(), ClusterFlagValue() = %+v,  registryMirror = %+v", ClusterFlagValue(), registryMirror)
 	if !config.ProfileNameValid(ClusterFlagValue()) {
 		out.WarningT("Profile name '{{.name}}' is not valid", out.V{"name": ClusterFlagValue()})
 		exit.UsageT("Only alphanumeric, dots, underscores and dashes '-' are permitted. Minimum 2 characters, starting by alphanumeric.")
 	}
 	existing, err := config.Load(ClusterFlagValue())
-	mabing.Log("mabing, runStart, existing = ", existing, " err = ", err)
 	if err != nil && !config.IsNotExist(err) {
 		exit.WithCodeT(exit.Data, "Unable to load config: {{.error}}", out.V{"error": err})
 	}
+	mabing.Logf("mabing, runStart(), existing = %+v, err = %+v", existing, err)
 
 	validateSpecifiedDriver(existing)
 	ds, alts, specified := selectDriver(existing)
-	mabing.Log("mabing, runStart, ds = ", ds, " alts = ", alts, " specified = ", specified)
+	mabing.Logf("mabing, runStart(), ds = %+v, alts = %+v, specified = %+v", ds, alts, specified)
 	starter, err := provisionWithDriver(cmd, ds, existing)
 	if err != nil {
 		if errors.Is(err, oci.ErrWindowsContainers) {
@@ -202,22 +204,22 @@ func runStart(cmd *cobra.Command, args []string) {
 			}
 		}
 	}
-
+	mabing.Logf("mabing, runStart(), starter = %+v", starter)
 	kubeconfig, err := startWithDriver(starter, existing)
 	if err != nil {
 		exit.WithError("failed to start node", err)
 	}
-	mabing.Log("mabing, kubeconfig = ", fmt.Sprintf("%+v", kubeconfig.CertificateAuthority))
+	mabing.Logf("mabing, runStart(), kubeconfig = %+v", kubeconfig.CertificateAuthority)
 	if err := showKubectlInfo(kubeconfig, starter.Node.KubernetesVersion, starter.Cfg.Name); err != nil {
 		glog.Errorf("kubectl info: %v", err)
 	}
-
+	mabing.Logln(mabing.GenerateLongSignEnd("runStart()"))
 }
 
 func provisionWithDriver(cmd *cobra.Command, ds registry.DriverState, existing *config.ClusterConfig) (node.Starter, error) {
+	mabing.Logln(mabing.GenerateLongSignStart("provisionWithDriver()"))
 	driverName := ds.Name
 	glog.Infof("selected driver: %s", driverName)
-	mabing.Log("mabing, selected driver: ", driverName)
 	validateDriver(ds, existing)
 	err := autoSetDriverOptions(cmd, driverName)
 	if err != nil {
@@ -243,7 +245,7 @@ func provisionWithDriver(cmd *cobra.Command, ds registry.DriverState, existing *
 		out.T(out.DryRun, `dry-run validation complete!`)
 		os.Exit(0)
 	}
-	mabing.Log("mabing, driver.IsVM(driverName): ", driver.IsVM(driverName))
+	mabing.Logf("mabing, provisionWithDriver(), driver.IsVM(driverName) = %+v", driver.IsVM(driverName))
 	if driver.IsVM(driverName) {
 		url, err := download.ISO(viper.GetStringSlice(isoURL), cmd.Flags().Changed(isoURL))
 		if err != nil {
@@ -270,7 +272,7 @@ func provisionWithDriver(cmd *cobra.Command, ds registry.DriverState, existing *
 	} else {
 		ssh.SetDefaultClient(ssh.External)
 	}
-
+	mabing.Logln(mabing.GenerateLongSignEnd("provisionWithDriver()"))
 	return node.Starter{
 		Runner:         mRunner,
 		PreExists:      preExists,
@@ -283,7 +285,7 @@ func provisionWithDriver(cmd *cobra.Command, ds registry.DriverState, existing *
 }
 
 func startWithDriver(starter node.Starter, existing *config.ClusterConfig) (*kubeconfig.Settings, error) {
-	mabing.Log("mabing, startWithDriver")
+	mabing.Logln(mabing.GenerateLongSignStart("startWithDriver()"))
 	kubeconfig, err := node.Start(starter, true)
 	if err != nil {
 		kubeconfig, err = maybeDeleteAndRetry(*starter.Cfg, *starter.Node, starter.ExistingAddons, err)
@@ -335,7 +337,7 @@ func startWithDriver(starter node.Starter, existing *config.ClusterConfig) (*kub
 			}
 		}
 	}
-
+	mabing.Logln(mabing.GenerateLongSignEnd("startWithDriver()"))
 	return kubeconfig, nil
 }
 
@@ -493,7 +495,7 @@ func selectDriver(existing *config.ClusterConfig) (registry.DriverState, []regis
 		out.T(out.Sparkle, `Using the {{.driver}} driver based on existing profile`, out.V{"driver": ds.String()})
 		return ds, nil, true
 	}
-	mabing.Log(`mabing, selectDriver, viper.GetString("driver") = `, viper.GetString("driver"), `viper.GetString("vm-driver") = `, viper.GetString("vm-driver"))
+	mabing.Logln(`mabing, selectDriver, viper.GetString("driver") = `, viper.GetString("driver"), `viper.GetString("vm-driver") = `, viper.GetString("vm-driver"))
 	// Default to looking at the new driver parameter
 	if d := viper.GetString("driver"); d != "" {
 		if vmd := viper.GetString("vm-driver"); vmd != "" {
@@ -577,7 +579,7 @@ func hostDriver(existing *config.ClusterConfig) string {
 // it matches the existing cluster if there is one
 func validateSpecifiedDriver(existing *config.ClusterConfig) {
 	if existing == nil {
-		mabing.Log("mabing, validateSpecifiedDriver, existing == nil ")
+		mabing.Logln("mabing, validateSpecifiedDriver, existing == nil ")
 		return
 	}
 
@@ -587,7 +589,7 @@ func validateSpecifiedDriver(existing *config.ClusterConfig) {
 	} else if d := viper.GetString("vm-driver"); d != "" {
 		requested = d
 	}
-	mabing.Log("mabing, validateSpecifiedDriver, requested = ", requested)
+	mabing.Logln("mabing, validateSpecifiedDriver, requested = ", requested)
 	// Neither --vm-driver or --driver was specified
 	if requested == "" {
 		return

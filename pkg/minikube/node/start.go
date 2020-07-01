@@ -78,7 +78,7 @@ type Starter struct {
 
 // Start spins up a guest and starts the Kubernetes node.
 func Start(starter Starter, apiServer bool) (*kubeconfig.Settings, error) {
-	mabing.Log("mabing, Start")
+	mabing.Logln("mabing, Start")
 	// wait for preloaded tarball to finish downloading before configuring runtimes
 	waitCacheRequiredImages(&cacheGroup)
 
@@ -98,7 +98,7 @@ func Start(starter Starter, apiServer bool) (*kubeconfig.Settings, error) {
 	} else if err := machine.AddHostAlias(starter.Runner, constants.HostAlias, hostIP); err != nil {
 		glog.Errorf("Unable to add host alias: %v", err)
 	}
-	mabing.Log("mabing, Start, hostIP = ", hostIP, "apiServer = ", apiServer)
+	mabing.Logln("mabing, Start, hostIP = ", hostIP, "apiServer = ", apiServer)
 	var bs bootstrapper.Bootstrapper
 	var kcs *kubeconfig.Settings
 	if apiServer {
@@ -189,14 +189,14 @@ func Start(starter Starter, apiServer bool) (*kubeconfig.Settings, error) {
 
 // Provision provisions the machine/container for the node
 func Provision(cc *config.ClusterConfig, n *config.Node, apiServer bool) (command.Runner, bool, libmachine.API, *host.Host, error) {
-
+	mabing.Logln(mabing.GenerateLongSignStart("Provision()"))
 	name := driver.MachineName(*cc, *n)
 	if apiServer { // true
 		out.T(out.ThumbsUp, "Starting control plane node {{.name}} in cluster {{.cluster}}", out.V{"name": name, "cluster": cc.Name})
 	} else {
 		out.T(out.ThumbsUp, "Starting node {{.name}} in cluster {{.cluster}}", out.V{"name": name, "cluster": cc.Name})
 	}
-	mabing.Log("driver.IsKIC(cc.Driver) = ", driver.IsKIC(cc.Driver), "driver.BareMetal(cc.Driver) = ", driver.BareMetal(cc.Driver))
+	mabing.Logf("mabing, driver.IsKIC(cc.Driver) = %+v, driver.BareMetal(cc.Driver) = %+v", driver.IsKIC(cc.Driver), driver.BareMetal(cc.Driver))
 	if driver.IsKIC(cc.Driver) {
 		beginDownloadKicArtifacts(&kicGroup, cc)
 	}
@@ -213,7 +213,7 @@ func Provision(cc *config.ClusterConfig, n *config.Node, apiServer bool) (comman
 
 	handleDownloadOnly(&cacheGroup, &kicGroup, n.KubernetesVersion)
 	waitDownloadKicArtifacts(&kicGroup)
-
+	mabing.Logln(mabing.GenerateLongSignEnd("Provision()"))
 	return startMachine(cc, n)
 
 }
@@ -267,7 +267,7 @@ func forceSystemd() bool {
 
 // setupKubeAdm adds any requested files into the VM before Kubernetes is started
 func setupKubeAdm(mAPI libmachine.API, cfg config.ClusterConfig, n config.Node, r command.Runner) bootstrapper.Bootstrapper {
-	mabing.Log("mabing, setupKubeAdm")
+	mabing.Logln("mabing, setupKubeAdm")
 	bs, err := cluster.Bootstrapper(mAPI, viper.GetString(cmdcfg.Bootstrapper), cfg, r)
 	if err != nil {
 		exit.WithError("Failed to get bootstrapper", err)

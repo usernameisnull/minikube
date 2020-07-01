@@ -176,7 +176,7 @@ func (c *simpleConfigLoader) LoadConfigFromFile(profileName string, miniHome ...
 	var cc ClusterConfig
 	// Move to profile package
 	path := profileFilePath(profileName, miniHome...)
-	mabing.Log("mabing, (c *simpleConfigLoader) LoadConfigFromFile,path = ", path)
+	mabing.Logln("mabing, (c *simpleConfigLoader) LoadConfigFromFile,path = ", path)
 	if _, err := os.Stat(path); err != nil {
 		if os.IsNotExist(err) {
 			return nil, &ErrNotExist{fmt.Sprintf("cluster %q does not exist", profileName)}
