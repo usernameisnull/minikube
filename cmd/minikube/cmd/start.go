@@ -207,7 +207,7 @@ func runStart(cmd *cobra.Command, args []string) {
 	if err != nil {
 		exit.WithError("failed to start node", err)
 	}
-
+	mabing.Log("mabing, kubeconfig = ", fmt.Sprintf("%+v", kubeconfig.CertificateAuthority))
 	if err := showKubectlInfo(kubeconfig, starter.Node.KubernetesVersion, starter.Cfg.Name); err != nil {
 		glog.Errorf("kubectl info: %v", err)
 	}
@@ -283,6 +283,7 @@ func provisionWithDriver(cmd *cobra.Command, ds registry.DriverState, existing *
 }
 
 func startWithDriver(starter node.Starter, existing *config.ClusterConfig) (*kubeconfig.Settings, error) {
+	mabing.Log("mabing, startWithDriver")
 	kubeconfig, err := node.Start(starter, true)
 	if err != nil {
 		kubeconfig, err = maybeDeleteAndRetry(*starter.Cfg, *starter.Node, starter.ExistingAddons, err)

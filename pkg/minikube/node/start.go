@@ -78,6 +78,7 @@ type Starter struct {
 
 // Start spins up a guest and starts the Kubernetes node.
 func Start(starter Starter, apiServer bool) (*kubeconfig.Settings, error) {
+	mabing.Log("mabing, Start")
 	// wait for preloaded tarball to finish downloading before configuring runtimes
 	waitCacheRequiredImages(&cacheGroup)
 
@@ -97,7 +98,7 @@ func Start(starter Starter, apiServer bool) (*kubeconfig.Settings, error) {
 	} else if err := machine.AddHostAlias(starter.Runner, constants.HostAlias, hostIP); err != nil {
 		glog.Errorf("Unable to add host alias: %v", err)
 	}
-
+	mabing.Log("mabing, Start, hostIP = ", hostIP, "apiServer = ", apiServer)
 	var bs bootstrapper.Bootstrapper
 	var kcs *kubeconfig.Settings
 	if apiServer {
@@ -266,6 +267,7 @@ func forceSystemd() bool {
 
 // setupKubeAdm adds any requested files into the VM before Kubernetes is started
 func setupKubeAdm(mAPI libmachine.API, cfg config.ClusterConfig, n config.Node, r command.Runner) bootstrapper.Bootstrapper {
+	mabing.Log("mabing, setupKubeAdm")
 	bs, err := cluster.Bootstrapper(mAPI, viper.GetString(cmdcfg.Bootstrapper), cfg, r)
 	if err != nil {
 		exit.WithError("Failed to get bootstrapper", err)

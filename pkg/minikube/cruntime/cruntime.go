@@ -135,7 +135,11 @@ type ListOptions struct {
 // New returns an appropriately configured runtime
 func New(c Config) (Manager, error) {
 	sm := sysinit.New(c.Runner)
-	mabing.Log("mabing, New(c Config), sm = ", sm)
+	if sm == nil {
+		mabing.Log("mabing, New(c Config), sm = nil")
+	} else {
+		mabing.Log("mabing, New(c Config), sm = ", fmt.Sprintf("%+v", sm.Name()))
+	}
 	switch c.Type {
 	case "", "docker":
 		return &Docker{

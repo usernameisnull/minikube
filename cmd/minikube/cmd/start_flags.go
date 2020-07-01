@@ -333,7 +333,7 @@ func generateClusterConfig(cmd *cobra.Command, existing *config.ClusterConfig, k
 	}
 
 	r, err := cruntime.New(cruntime.Config{Type: cc.KubernetesConfig.ContainerRuntime}) //mabing: cc.KubernetesConfig.ContainerRuntime=docker
-	mabing.Log("mabing, generateClusterConfig, r = ", fmt.Sprintf("%+v", r), "是否是docker类型 = ", r.(*cruntime.Docker))
+	mabing.Log("mabing, generateClusterConfig, r = ", fmt.Sprintf("%+v", r))
 	if err != nil {
 		return cc, config.Node{}, errors.Wrap(err, "new runtime manager")
 	}
@@ -341,6 +341,7 @@ func generateClusterConfig(cmd *cobra.Command, existing *config.ClusterConfig, k
 	// Feed Docker our host proxy environment by default, so that it can pull images
 	// doing this for both new config and existing, in case proxy changed since previous start
 	if _, ok := r.(*cruntime.Docker); ok {
+		mabing.Log("mabing, 开始设置Docker环境变量")
 		proxy.SetDockerEnv()
 	}
 

@@ -25,6 +25,8 @@ import (
 	"path/filepath"
 	"runtime"
 
+	"k8s.io/minikube/mabing"
+
 	"github.com/golang/glog"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
@@ -99,8 +101,8 @@ func PreloadExists(k8sVersion, containerRuntime string, forcePreload ...bool) bo
 		glog.Infof("Found local preload: %s", targetPath)
 		return true
 	}
-
 	url := remoteTarballURL(k8sVersion, containerRuntime)
+	mabing.Log("mabing, targetPath = ", targetPath, "url = ", url)
 	resp, err := http.Head(url)
 	if err != nil {
 		glog.Warningf("%s fetch error: %v", url, err)
@@ -140,13 +142,13 @@ func Preload(k8sVersion, containerRuntime string) error {
 	}
 
 	/*
-	if err := saveChecksumFile(k8sVersion, containerRuntime); err != nil {
-		return errors.Wrap(err, "saving checksum file")
-	}
+		if err := saveChecksumFile(k8sVersion, containerRuntime); err != nil {
+			return errors.Wrap(err, "saving checksum file")
+		}
 
-	if err := verifyChecksum(k8sVersion, containerRuntime, targetPath); err != nil {
-		return errors.Wrap(err, "verify")
-	}
+		if err := verifyChecksum(k8sVersion, containerRuntime, targetPath); err != nil {
+			return errors.Wrap(err, "verify")
+		}
 	*/
 
 	return nil
