@@ -21,6 +21,8 @@ import (
 	"fmt"
 	"os/exec"
 
+	"k8s.io/minikube/mabing"
+
 	"github.com/blang/semver"
 	"github.com/golang/glog"
 	"github.com/pkg/errors"
@@ -133,7 +135,7 @@ type ListOptions struct {
 // New returns an appropriately configured runtime
 func New(c Config) (Manager, error) {
 	sm := sysinit.New(c.Runner)
-
+	mabing.Log("mabing, New(c Config), sm = ", sm)
 	switch c.Type {
 	case "", "docker":
 		return &Docker{

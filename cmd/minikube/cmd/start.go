@@ -150,12 +150,14 @@ func runStart(cmd *cobra.Command, args []string) {
 		exit.UsageT("Only alphanumeric, dots, underscores and dashes '-' are permitted. Minimum 2 characters, starting by alphanumeric.")
 	}
 	existing, err := config.Load(ClusterFlagValue())
+	mabing.Log("mabing, runStart, existing = ", existing, " err = ", err)
 	if err != nil && !config.IsNotExist(err) {
 		exit.WithCodeT(exit.Data, "Unable to load config: {{.error}}", out.V{"error": err})
 	}
 
 	validateSpecifiedDriver(existing)
 	ds, alts, specified := selectDriver(existing)
+	mabing.Log("mabing, runStart, ds = ", ds, " alts = ", alts, " specified = ", specified)
 	starter, err := provisionWithDriver(cmd, ds, existing)
 	if err != nil {
 		if errors.Is(err, oci.ErrWindowsContainers) {
@@ -490,7 +492,7 @@ func selectDriver(existing *config.ClusterConfig) (registry.DriverState, []regis
 		out.T(out.Sparkle, `Using the {{.driver}} driver based on existing profile`, out.V{"driver": ds.String()})
 		return ds, nil, true
 	}
-
+	mabing.Log(`mabing, selectDriver, viper.GetString("driver") = `, viper.GetString("driver"), `viper.GetString("vm-driver") = `, viper.GetString("vm-driver"))
 	// Default to looking at the new driver parameter
 	if d := viper.GetString("driver"); d != "" {
 		if vmd := viper.GetString("vm-driver"); vmd != "" {
@@ -574,6 +576,7 @@ func hostDriver(existing *config.ClusterConfig) string {
 // it matches the existing cluster if there is one
 func validateSpecifiedDriver(existing *config.ClusterConfig) {
 	if existing == nil {
+		mabing.Log("mabing, validateSpecifiedDriver, existing == nil ")
 		return
 	}
 
@@ -583,7 +586,7 @@ func validateSpecifiedDriver(existing *config.ClusterConfig) {
 	} else if d := viper.GetString("vm-driver"); d != "" {
 		requested = d
 	}
-
+	mabing.Log("mabing, validateSpecifiedDriver, requested = ", requested)
 	// Neither --vm-driver or --driver was specified
 	if requested == "" {
 		return

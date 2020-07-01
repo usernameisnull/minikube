@@ -21,6 +21,8 @@ import (
 	"strings"
 	"time"
 
+	"k8s.io/minikube/mabing"
+
 	"github.com/blang/semver"
 	"github.com/golang/glog"
 	"github.com/pkg/errors"
@@ -206,7 +208,7 @@ func initNetworkingFlags() {
 
 // ClusterFlagValue returns the current cluster name based on flags
 func ClusterFlagValue() string {
-	return viper.GetString(config.ProfileName)
+	return viper.GetString(config.ProfileName) // mabing: cmd/minikube/cmd/root.go里设置了默认值为: minikube
 }
 
 // generateClusterConfig generate a config.ClusterConfig based on flags or existing cluster config
@@ -330,7 +332,8 @@ func generateClusterConfig(cmd *cobra.Command, existing *config.ClusterConfig, k
 		cc.VerifyComponents = interpretWaitFlag(*cmd)
 	}
 
-	r, err := cruntime.New(cruntime.Config{Type: cc.KubernetesConfig.ContainerRuntime})
+	r, err := cruntime.New(cruntime.Config{Type: cc.KubernetesConfig.ContainerRuntime}) //mabing: cc.KubernetesConfig.ContainerRuntime=docker
+	mabing.Log("mabing, generateClusterConfig, r = ", fmt.Sprintf("%+v", r), "是否是docker类型 = ", r.(*cruntime.Docker))
 	if err != nil {
 		return cc, config.Node{}, errors.Wrap(err, "new runtime manager")
 	}
@@ -345,6 +348,7 @@ func generateClusterConfig(cmd *cobra.Command, existing *config.ClusterConfig, k
 	if driver.BareMetal(cc.Driver) {
 		kubeNodeName = "m01"
 	}
+	mabing.Log("mabing, generateClusterConfig, kubeNodeName = ", kubeNodeName)
 	return createNode(cc, kubeNodeName, existing)
 }
 
