@@ -24,6 +24,8 @@ import (
 	"runtime"
 	"sync"
 
+	"k8s.io/minikube/mabing"
+
 	"fmt"
 	"net"
 
@@ -268,7 +270,7 @@ func (k *Bootstrapper) init(cfg config.ClusterConfig) error {
 
 // unpause unpauses any Kubernetes backplane components
 func (k *Bootstrapper) unpause(cfg config.ClusterConfig) error {
-
+	mabing.GenerateLongSignStart("kubeadm.unpause()")
 	cr, err := cruntime.New(cruntime.Config{Type: cfg.KubernetesConfig.ContainerRuntime, Runner: k.c})
 	if err != nil {
 		return err
@@ -278,17 +280,19 @@ func (k *Bootstrapper) unpause(cfg config.ClusterConfig) error {
 	if err != nil {
 		return errors.Wrap(err, "list paused")
 	}
-
+	mabing.Logf("mabing, kubeadm.unpause(), ids = %+v", ids)
 	if len(ids) > 0 {
 		if err := cr.UnpauseContainers(ids); err != nil {
 			return err
 		}
 	}
+	mabing.GenerateLongSignEnd("kubeadm.unpause()")
 	return nil
 }
 
 // StartCluster starts the cluster
 func (k *Bootstrapper) StartCluster(cfg config.ClusterConfig) error {
+	mabing.GenerateLongSignStart("kubeadm.StartCluster()")
 	start := time.Now()
 	glog.Infof("StartCluster: %+v", cfg)
 	defer func() {
@@ -301,6 +305,7 @@ func (k *Bootstrapper) StartCluster(cfg config.ClusterConfig) error {
 	}
 
 	if err := bsutil.ExistingConfig(k.c); err == nil {
+		mabing.Logf("mabing, kubeadm.StartCluster(), 存在3个文件: /var/lib/kubelet/kubeadm-flags.env, /var/lib/kubelet/config.yaml, /var/lib/minikube/etcd")
 		glog.Infof("found existing configuration files, will attempt cluster restart")
 		rerr := k.restartControlPlane(cfg)
 		if rerr == nil {
@@ -328,6 +333,7 @@ func (k *Bootstrapper) StartCluster(cfg config.ClusterConfig) error {
 	if err := k.DeleteCluster(cfg.KubernetesConfig); err != nil {
 		glog.Warningf("delete failed: %v", err)
 	}
+	mabing.GenerateLongSignEnd("kubeadm.StartCluster()")
 	return k.init(cfg)
 }
 

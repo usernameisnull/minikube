@@ -173,6 +173,7 @@ type simpleConfigLoader struct{}
 var DefaultLoader Loader = &simpleConfigLoader{}
 
 func (c *simpleConfigLoader) LoadConfigFromFile(profileName string, miniHome ...string) (*ClusterConfig, error) {
+	mabing.Logln(mabing.GenerateLongSignStart("LoadConfigFromFile()"))
 	var cc ClusterConfig
 	// Move to profile package
 	path := profileFilePath(profileName, miniHome...)
@@ -192,15 +193,19 @@ func (c *simpleConfigLoader) LoadConfigFromFile(profileName string, miniHome ...
 	if err := json.Unmarshal(data, &cc); err != nil {
 		return nil, errors.Wrap(err, "unmarshal")
 	}
+	mabing.Logln(mabing.GenerateLongSignEnd("LoadConfigFromFile()"))
 	return &cc, nil
 }
 
 func (c *simpleConfigLoader) WriteConfigToFile(profileName string, cc *ClusterConfig, miniHome ...string) error {
+	mabing.GenerateLongSignStart("WriteConfigToFile()")
 	path := profileFilePath(profileName, miniHome...)
+	mabing.Logf("mabing, WriteConfigToFile(), path = %+v", path)
 	contents, err := json.MarshalIndent(cc, "", "	")
 	if err != nil {
 		return err
 	}
+	mabing.GenerateLongSignEnd("WriteConfigToFile()")
 	return ioutil.WriteFile(path, contents, 0644)
 }
 

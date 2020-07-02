@@ -213,6 +213,8 @@ func ClusterFlagValue() string {
 
 // generateClusterConfig generate a config.ClusterConfig based on flags or existing cluster config
 func generateClusterConfig(cmd *cobra.Command, existing *config.ClusterConfig, k8sVersion string, drvName string) (config.ClusterConfig, config.Node, error) {
+	mabing.Logln(mabing.GenerateLongSignStart("generateClusterConfig()"))
+	mabing.Logf("mabing, generateClusterConfig(), cmd = %+v, existing = %+v, k8sVersion = %+v, drvName = %+v", cmd, existing, k8sVersion, drvName)
 	var cc config.ClusterConfig
 	if existing != nil { // create profile config first time
 		cc = updateExistingConfigFromFlags(cmd, existing)
@@ -333,7 +335,7 @@ func generateClusterConfig(cmd *cobra.Command, existing *config.ClusterConfig, k
 	}
 
 	r, err := cruntime.New(cruntime.Config{Type: cc.KubernetesConfig.ContainerRuntime}) //mabing: cc.KubernetesConfig.ContainerRuntime=docker
-	mabing.Logln("mabing, generateClusterConfig, r = ", fmt.Sprintf("%+v", r))
+	mabing.Logln("mabing, generateClusterConfig(), r = ", fmt.Sprintf("%+v", r))
 	if err != nil {
 		return cc, config.Node{}, errors.Wrap(err, "new runtime manager")
 	}
@@ -341,7 +343,7 @@ func generateClusterConfig(cmd *cobra.Command, existing *config.ClusterConfig, k
 	// Feed Docker our host proxy environment by default, so that it can pull images
 	// doing this for both new config and existing, in case proxy changed since previous start
 	if _, ok := r.(*cruntime.Docker); ok {
-		mabing.Logln("mabing, 开始设置Docker环境变量")
+		mabing.Logln("mabing, generateClusterConfig(), 开始设置Docker环境变量")
 		proxy.SetDockerEnv()
 	}
 
@@ -349,7 +351,8 @@ func generateClusterConfig(cmd *cobra.Command, existing *config.ClusterConfig, k
 	if driver.BareMetal(cc.Driver) {
 		kubeNodeName = "m01"
 	}
-	mabing.Logln("mabing, generateClusterConfig, kubeNodeName = ", kubeNodeName)
+	mabing.Logln("mabing, generateClusterConfig(), kubeNodeName = ", kubeNodeName)
+	mabing.Logln(mabing.GenerateLongSignEnd("generateClusterConfig()"))
 	return createNode(cc, kubeNodeName, existing)
 }
 

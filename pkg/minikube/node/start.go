@@ -78,7 +78,7 @@ type Starter struct {
 
 // Start spins up a guest and starts the Kubernetes node.
 func Start(starter Starter, apiServer bool) (*kubeconfig.Settings, error) {
-	mabing.Logln("mabing, Start")
+	mabing.Logln(mabing.GenerateLongSignStart("node.Start()"))
 	// wait for preloaded tarball to finish downloading before configuring runtimes
 	waitCacheRequiredImages(&cacheGroup)
 
@@ -98,7 +98,7 @@ func Start(starter Starter, apiServer bool) (*kubeconfig.Settings, error) {
 	} else if err := machine.AddHostAlias(starter.Runner, constants.HostAlias, hostIP); err != nil {
 		glog.Errorf("Unable to add host alias: %v", err)
 	}
-	mabing.Logln("mabing, Start, hostIP = ", hostIP, "apiServer = ", apiServer)
+	mabing.Logln("mabing, node.Start(), hostIP = ", hostIP, "apiServer = ", apiServer)
 	var bs bootstrapper.Bootstrapper
 	var kcs *kubeconfig.Settings
 	if apiServer {
@@ -182,7 +182,7 @@ func Start(starter Starter, apiServer bool) (*kubeconfig.Settings, error) {
 	}
 
 	wg.Wait()
-
+	mabing.GenerateLongSignEnd("node.Start()")
 	// Write enabled addons to the config before completion
 	return kcs, config.Write(viper.GetString(config.ProfileName), starter.Cfg)
 }
@@ -267,7 +267,7 @@ func forceSystemd() bool {
 
 // setupKubeAdm adds any requested files into the VM before Kubernetes is started
 func setupKubeAdm(mAPI libmachine.API, cfg config.ClusterConfig, n config.Node, r command.Runner) bootstrapper.Bootstrapper {
-	mabing.Logln("mabing, setupKubeAdm")
+	mabing.GenerateLongSignStart("setupKubeAdm()")
 	bs, err := cluster.Bootstrapper(mAPI, viper.GetString(cmdcfg.Bootstrapper), cfg, r)
 	if err != nil {
 		exit.WithError("Failed to get bootstrapper", err)
@@ -285,19 +285,21 @@ func setupKubeAdm(mAPI libmachine.API, cfg config.ClusterConfig, n config.Node, 
 	if err := bs.SetupCerts(cfg.KubernetesConfig, n); err != nil {
 		exit.WithError("Failed to setup certs", err)
 	}
-
+	mabing.GenerateLongSignEnd("setupKubeAdm()")
 	return bs
 }
 
 func setupKubeconfig(h *host.Host, cc *config.ClusterConfig, n *config.Node, clusterName string) *kubeconfig.Settings {
+	mabing.GenerateLongSignStart("node.setupKubeconfig()")
+	mabing.Logf("mabing, node.setupKubeconfig(), h = %+v, cc = %+v, n = %+v, clusterName = %+v", h, cc, n, clusterName)
 	addr, err := apiServerURL(*h, *cc, *n)
 	if err != nil {
 		exit.WithError("Failed to get API Server URL", err)
 	}
-
 	if cc.KubernetesConfig.APIServerName != constants.APIServerName {
 		addr = strings.Replace(addr, n.IP, cc.KubernetesConfig.APIServerName, -1)
 	}
+	mabing.Logf("mabing, node.setupKubeconfig(), cc.KubernetesConfig.APIServerName = %+v, constants.APIServerName = %+v, addr = %+v", cc.KubernetesConfig.APIServerName, constants.APIServerName, addr)
 	kcs := &kubeconfig.Settings{
 		ClusterName:          clusterName,
 		ClusterServerAddress: addr,
@@ -307,8 +309,9 @@ func setupKubeconfig(h *host.Host, cc *config.ClusterConfig, n *config.Node, clu
 		KeepContext:          cc.KeepContext,
 		EmbedCerts:           cc.EmbedCerts,
 	}
-
+	mabing.Logf("mabing, node.setupKubeconfig(),kubeconfig.PathFromEnv() = %+v", kubeconfig.PathFromEnv())
 	kcs.SetPath(kubeconfig.PathFromEnv())
+	mabing.GenerateLongSignEnd("node.setupKubeconfig()")
 	return kcs
 }
 

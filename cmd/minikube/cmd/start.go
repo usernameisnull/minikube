@@ -204,7 +204,7 @@ func runStart(cmd *cobra.Command, args []string) {
 			}
 		}
 	}
-	mabing.Logf("mabing, runStart(), starter = %+v", starter)
+	mabing.Logf("mabing, runStart(), starter = %+v, err = %+v", starter, err)
 	kubeconfig, err := startWithDriver(starter, existing)
 	if err != nil {
 		exit.WithError("failed to start node", err)
@@ -231,10 +231,11 @@ func provisionWithDriver(cmd *cobra.Command, ds registry.DriverState, existing *
 
 	// Download & update the driver, even in --download-only mode
 	if !viper.GetBool(dryRun) {
-		updateDriver(driverName)
+		updateDriver(driverName) // mabing: 对于none来说啥也不会干
 	}
 
 	k8sVersion := getKubernetesVersion(existing)
+	mabing.Logf("mabing, provisionWithDriver(), k8sVersion = %+v, existing = %+v", k8sVersion, existing)
 	cc, n, err := generateClusterConfig(cmd, existing, k8sVersion, driverName)
 	if err != nil {
 		return node.Starter{}, errors.Wrap(err, "Failed to generate config")
@@ -578,8 +579,10 @@ func hostDriver(existing *config.ClusterConfig) string {
 // validateSpecifiedDriver makes sure that if a user has passed in a driver
 // it matches the existing cluster if there is one
 func validateSpecifiedDriver(existing *config.ClusterConfig) {
+	mabing.Logln(mabing.GenerateLongSignStart("validateSpecifiedDriver"))
 	if existing == nil {
-		mabing.Logln("mabing, validateSpecifiedDriver, existing == nil ")
+		mabing.Logln("mabing, validateSpecifiedDriver, existing == nil, 退出函数")
+		mabing.Logln(mabing.GenerateLongSignEnd("validateSpecifiedDriver"))
 		return
 	}
 
@@ -597,9 +600,9 @@ func validateSpecifiedDriver(existing *config.ClusterConfig) {
 
 	old := hostDriver(existing)
 	if requested == old {
+		mabing.Logln(mabing.GenerateLongSignEnd("validateSpecifiedDriver"))
 		return
 	}
-
 	out.ErrT(out.Conflict, `The existing "{{.name}}" VM was created using the "{{.old}}" driver, and is incompatible with the "{{.new}}" driver.`,
 		out.V{"name": existing.Name, "new": requested, "old": old})
 
@@ -613,6 +616,7 @@ func validateSpecifiedDriver(existing *config.ClusterConfig) {
 `, out.V{"command": mustload.ExampleCmd(existing.Name, "start"), "delcommand": mustload.ExampleCmd(existing.Name, "delete"), "old": old, "name": existing.Name})
 
 	exit.WithCodeT(exit.Config, "Exiting.")
+	mabing.Logln(mabing.GenerateLongSignEnd("validateSpecifiedDriver"))
 }
 
 // validateDriver validates that the selected driver appears sane, exits if not
@@ -938,6 +942,7 @@ func createNode(cc config.ClusterConfig, kubeNodeName string, existing *config.C
 
 // autoSetDriverOptions sets the options needed for specific driver automatically.
 func autoSetDriverOptions(cmd *cobra.Command, drvName string) (err error) {
+	mabing.Logln(mabing.GenerateLongSignStart("autoSetDriverOptions()"))
 	err = nil
 	hints := driver.FlagDefaults(drvName)
 	if len(hints.ExtraOptions) > 0 {
@@ -964,7 +969,7 @@ func autoSetDriverOptions(cmd *cobra.Command, drvName string) (err error) {
 		glog.Infof("auto set %s to %q.", cmdcfg.Bootstrapper, hints.Bootstrapper)
 
 	}
-
+	mabing.Logln(mabing.GenerateLongSignEnd("autoSetDriverOptions()"))
 	return err
 }
 

@@ -71,7 +71,7 @@ var RootCmd = &cobra.Command{
 		}
 
 		logDir := pflag.Lookup("log_dir")
-		mabing.Logln("mabing, logDir = ", logDir.Value, "logDir.Changed = ", logDir.Changed)
+		fmt.Println("mabing, RootCmd, logDir = ", logDir.Value, "logDir.Changed = ", logDir.Changed)
 		if !logDir.Changed {
 			if err := logDir.Value.Set(localpath.MakeMiniPath("logs")); err != nil {
 				exit.WithError("logdir set failed", err)
@@ -154,6 +154,7 @@ func usageTemplate() string {
 func setFlagsUsingViper() {
 	for _, config := range viperWhiteList {
 		var a = pflag.Lookup(config)
+		fmt.Printf("setFlagsUsingViper==========,a.Name = `%+v`, a.Value.String() = `%+v`\n", a.Name, a.Value.String())
 		viper.SetDefault(a.Name, a.DefValue)
 		// If the flag is set, override viper value
 		if a.Changed {

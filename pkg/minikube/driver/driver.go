@@ -23,6 +23,8 @@ import (
 	"sort"
 	"strings"
 
+	"k8s.io/minikube/mabing"
+
 	"github.com/golang/glog"
 	"k8s.io/minikube/pkg/minikube/config"
 	"k8s.io/minikube/pkg/minikube/registry"
@@ -159,12 +161,14 @@ type FlagHints struct {
 
 // FlagDefaults returns suggested defaults based on a driver
 func FlagDefaults(name string) FlagHints {
+	mabing.Logln(mabing.GenerateLongSignStart("FlagDefaults()"))
 	fh := FlagHints{}
 	if name != None {
 		fh.CacheImages = true
 		if name == Docker {
 			fh.ExtraOptions = append(fh.ExtraOptions, fmt.Sprintf("kubeadm.pod-network-cidr=%s", config.DefaultPodCIDR))
 		}
+		mabing.Logln(mabing.GenerateLongSignEnd("FlagDefaults()"))
 		return fh
 	}
 
@@ -173,8 +177,10 @@ func FlagDefaults(name string) FlagHints {
 	if _, err := os.Stat(systemdResolvConf); err == nil {
 		noneEO := fmt.Sprintf("kubelet.resolv-conf=%s", systemdResolvConf)
 		fh.ExtraOptions = append(fh.ExtraOptions, noneEO)
+		mabing.Logln(mabing.GenerateLongSignEnd("FlagDefaults()"))
 		return fh
 	}
+	mabing.Logln(mabing.GenerateLongSignEnd("FlagDefaults()"))
 	return fh
 }
 

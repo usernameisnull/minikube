@@ -25,5 +25,5 @@ var SkipAdditionalPreflights = map[string][]string{}
 var expectedRemoteArtifacts = []string{
 	"/var/lib/kubelet/kubeadm-flags.env",
 	"/var/lib/kubelet/config.yaml",
-	EtcdDataDir(),
+	EtcdDataDir(), //mabing: /var/lib/minikube/etcd
 }
