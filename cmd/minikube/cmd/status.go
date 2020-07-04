@@ -24,6 +24,8 @@ import (
 	"strings"
 	"text/template"
 
+	"k8s.io/minikube/mabing"
+
 	"github.com/docker/machine/libmachine"
 	"github.com/docker/machine/libmachine/state"
 	"github.com/golang/glog"
@@ -97,7 +99,7 @@ var statusCmd = &cobra.Command{
 	Exit status contains the status of minikube's VM, cluster and Kubernetes encoded on it's bits in this order from right to left.
 	Eg: 7 meaning: 1 (for minikube NOK) + 2 (for cluster NOK) + 4 (for Kubernetes NOK)`,
 	Run: func(cmd *cobra.Command, args []string) {
-
+		mabing.Logln(mabing.GenerateLongSignStart("status"))
 		if output != "text" && statusFormat != defaultStatusFormat {
 			exit.UsageT("Cannot use both --output and --format options")
 		}
@@ -149,7 +151,7 @@ var statusCmd = &cobra.Command{
 		default:
 			exit.WithCodeT(exit.BadUsage, fmt.Sprintf("invalid output format: %s. Valid values: 'text', 'json'", output))
 		}
-
+		mabing.Logln(mabing.GenerateLongSignEnd("status"))
 		os.Exit(exitCode(statuses))
 	},
 }

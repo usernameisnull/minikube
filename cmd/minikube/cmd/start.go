@@ -623,7 +623,7 @@ func validateSpecifiedDriver(existing *config.ClusterConfig) {
 func validateDriver(ds registry.DriverState, existing *config.ClusterConfig) {
 	name := ds.Name
 	glog.Infof("validating driver %q against %+v", name, existing)
-	if !driver.Supported(name) {
+	if !driver.Supported(name) { //mabing: 这里是根据操作系统来调用的不同的driver, linux就是: driver_linux.go里的, 是怎么实现这种调用的呢?
 		exit.WithCodeT(exit.Unavailable, "The driver '{{.driver}}' is not supported on {{.os}}", out.V{"driver": name, "os": runtime.GOOS})
 	}
 

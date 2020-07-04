@@ -52,6 +52,7 @@ var (
 )
 
 func main() {
+	fmt.Println("---------------------main() start---------------------------")
 	bridgeLogMessages()
 	defer glog.Flush()
 	if os.Getenv(minikubeEnableProfile) == "1" {
@@ -63,6 +64,7 @@ func main() {
 	out.SetOutFile(os.Stdout)
 	out.SetErrFile(os.Stderr)
 	cmd.Execute()
+	fmt.Println("---------------------main() end---------------------------")
 }
 
 // bridgeLogMessages bridges non-glog logs into glog

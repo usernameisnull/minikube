@@ -83,6 +83,7 @@ var RootCmd = &cobra.Command{
 // Execute adds all child commands to the root command sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
+	fmt.Println(mabing.GenerateLongSignStart("root.Execute()"))
 	for _, c := range RootCmd.Commands() {
 		c.Short = translate.T(c.Short)
 		c.Long = translate.T(c.Long)
@@ -96,11 +97,11 @@ func Execute() {
 	RootCmd.Flags().VisitAll(func(flag *pflag.Flag) {
 		flag.Usage = translate.T(flag.Usage)
 	})
-
-	if runtime.GOOS != "windows" {
+	fmt.Println("mabing, root.Execute(), runtime.GOOS: = ", runtime.GOOS)
+	if runtime.GOOS != "windows" { // mabing: 感觉没啥用啊
 		// add minikube binaries to the path
-		targetDir := localpath.MakeMiniPath("bin") // targetDir="/root/.minikube/bin"
-		mabing.Logln("mabing, targetDir: ", targetDir)
+		targetDir := localpath.MakeMiniPath("bin") //mabing: targetDir="/root/.minikube/bin"
+		fmt.Println("mabing, root.Execute(), targetDir: ", targetDir)
 		addToPath(targetDir)
 	}
 
@@ -117,6 +118,7 @@ func Execute() {
 		// Cobra already outputs the error, typically because the user provided an unknown command.
 		os.Exit(exit.BadUsage)
 	}
+	fmt.Println(mabing.GenerateLongSignEnd("root.Execute()"))
 }
 
 // usageTemplate just calls translate.T on the default usage template
@@ -154,7 +156,7 @@ func usageTemplate() string {
 func setFlagsUsingViper() {
 	for _, config := range viperWhiteList {
 		var a = pflag.Lookup(config)
-		fmt.Printf("setFlagsUsingViper==========,a.Name = `%+v`, a.Value.String() = `%+v`\n", a.Name, a.Value.String())
+		fmt.Printf("setFlagsUsingViper1==========,a.Name = `%+v`, a.Value.String() = `%+v`\n", a.Name, a.Value.String())
 		viper.SetDefault(a.Name, a.DefValue)
 		// If the flag is set, override viper value
 		if a.Changed {
@@ -280,7 +282,9 @@ func setupViper() {
 }
 
 func addToPath(dir string) {
-	new := fmt.Sprintf("%s:%s", dir, os.Getenv("PATH"))
+	newPath := fmt.Sprintf("%s:%s", dir, os.Getenv("PATH"))
 	glog.Infof("Updating PATH: %s", dir)
-	os.Setenv("PATH", new)
+	if err := os.Setenv("PATH", newPath); err != nil {
+		fmt.Printf("updating PATH fail: %v", err)
+	}
 }
