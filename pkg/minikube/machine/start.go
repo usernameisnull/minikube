@@ -25,6 +25,8 @@ import (
 	"path/filepath"
 	"time"
 
+	"k8s.io/minikube/mabing"
+
 	"github.com/docker/machine/libmachine"
 	"github.com/docker/machine/libmachine/drivers"
 	"github.com/docker/machine/libmachine/engine"
@@ -63,11 +65,13 @@ var (
 
 // StartHost starts a host VM.
 func StartHost(api libmachine.API, cfg *config.ClusterConfig, n *config.Node) (*host.Host, bool, error) {
+	mabing.Logln(mabing.GenerateLongSignStart("StartHost()"))
 	machineName := driver.MachineName(*cfg, *n)
-
+	mabing.Logf("machineName = %+v", machineName)
 	// Prevent machine-driver boot races, as well as our own certificate race
 	releaser, err := acquireMachinesLock(machineName)
 	if err != nil {
+		mabing.Logln(mabing.GenerateLongSignEnd("StartHost()"))
 		return nil, false, errors.Wrap(err, "boot lock")
 	}
 	start := time.Now()
@@ -78,15 +82,18 @@ func StartHost(api libmachine.API, cfg *config.ClusterConfig, n *config.Node) (*
 
 	exists, err := api.Exists(machineName)
 	if err != nil {
+		mabing.Logln(mabing.GenerateLongSignEnd("StartHost()"))
 		return nil, false, errors.Wrapf(err, "exists: %s", machineName)
 	}
 	if !exists {
 		glog.Infof("Provisioning new machine with config: %+v %+v", cfg, n)
 		h, err := createHost(api, cfg, n)
+		mabing.Logln(mabing.GenerateLongSignEnd("StartHost()"))
 		return h, exists, err
 	}
 	glog.Infoln("Skipping create...Using existing machine configuration")
 	h, err := fixHost(api, cfg, n)
+	mabing.Logln(mabing.GenerateLongSignEnd("StartHost()"))
 	return h, exists, err
 }
 

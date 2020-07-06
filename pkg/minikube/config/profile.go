@@ -24,6 +24,8 @@ import (
 	"regexp"
 	"strings"
 
+	"k8s.io/minikube/mabing"
+
 	"github.com/golang/glog"
 	"github.com/spf13/viper"
 	"k8s.io/minikube/pkg/drivers/kic/oci"
@@ -148,6 +150,7 @@ func SaveNode(cfg *ClusterConfig, node *Node) error {
 
 // SaveProfile creates an profile out of the cfg and stores in $MINIKUBE_HOME/profiles/<profilename>/config.json
 func SaveProfile(name string, cfg *ClusterConfig, miniHome ...string) error {
+	mabing.Logln(mabing.GenerateLongSignStart("SaveProfile()"))
 	data, err := json.MarshalIndent(cfg, "", "    ")
 	if err != nil {
 		return err

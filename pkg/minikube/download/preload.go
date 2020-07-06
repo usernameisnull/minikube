@@ -75,7 +75,8 @@ func remoteTarballURL(k8sVersion, containerRuntime string) string {
 
 // PreloadExists returns true if there is a preloaded tarball that can be used
 func PreloadExists(k8sVersion, containerRuntime string, forcePreload ...bool) bool {
-
+	mabing.Logln(mabing.GenerateLongSignStart("PreloadExists"))
+	mabing.Logf("k8sVersion = %+v, containerRuntime = %+v, forcePreload = %+v", k8sVersion, containerRuntime, forcePreload)
 	// and https://github.com/kubernetes/minikube/issues/6934
 	// to track status of adding crio
 	if containerRuntime == "crio" {
@@ -116,11 +117,13 @@ func PreloadExists(k8sVersion, containerRuntime string, forcePreload ...bool) bo
 	}
 
 	glog.Infof("Found remote preload: %s", url)
+	mabing.Logln(mabing.GenerateLongSignEnd("PreloadExists"))
 	return true
 }
 
 // Preload caches the preloaded images tarball on the host machine
 func Preload(k8sVersion, containerRuntime string) error {
+	mabing.Logln(mabing.GenerateLongSignStart("Preload"))
 	targetPath := TarballPath(k8sVersion, containerRuntime)
 
 	if _, err := os.Stat(targetPath); err == nil {
@@ -150,7 +153,7 @@ func Preload(k8sVersion, containerRuntime string) error {
 			return errors.Wrap(err, "verify")
 		}
 	*/
-
+	mabing.Logln(mabing.GenerateLongSignEnd("Preload"))
 	return nil
 }
 

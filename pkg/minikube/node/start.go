@@ -197,11 +197,11 @@ func Provision(cc *config.ClusterConfig, n *config.Node, apiServer bool) (comman
 		out.T(out.ThumbsUp, "Starting node {{.name}} in cluster {{.cluster}}", out.V{"name": name, "cluster": cc.Name})
 	}
 	mabing.Logf("mabing, driver.IsKIC(cc.Driver) = %+v, driver.BareMetal(cc.Driver) = %+v", driver.IsKIC(cc.Driver), driver.BareMetal(cc.Driver))
-	if driver.IsKIC(cc.Driver) {
+	if driver.IsKIC(cc.Driver) { // mabing: KIC=Kubernetes in container, --vm-driver=none的时候, 这里为false
 		beginDownloadKicArtifacts(&kicGroup, cc)
 	}
 
-	if !driver.BareMetal(cc.Driver) {
+	if !driver.BareMetal(cc.Driver) { // mabing: --vm-driver=none的时候, 这里为true
 		beginCacheKubernetesImages(&cacheGroup, cc.KubernetesConfig.ImageRepository, n.KubernetesVersion, cc.KubernetesConfig.ContainerRuntime)
 	}
 
@@ -325,6 +325,7 @@ func apiServerURL(h host.Host, cc config.ClusterConfig, n config.Node) (string, 
 
 // StartMachine starts a VM
 func startMachine(cfg *config.ClusterConfig, node *config.Node) (runner command.Runner, preExists bool, machineAPI libmachine.API, host *host.Host, err error) {
+	mabing.Logln(mabing.GenerateLongSignStart("node.startMachine()"))
 	m, err := machine.NewAPIClient()
 	if err != nil {
 		return runner, preExists, m, host, errors.Wrap(err, "Failed to get machine client")
@@ -348,14 +349,16 @@ func startMachine(cfg *config.ClusterConfig, node *config.Node) (runner command.
 	if err != nil {
 		out.FailureT("Failed to set NO_PROXY Env. Please use `export NO_PROXY=$NO_PROXY,{{.ip}}`.", out.V{"ip": ip})
 	}
-
+	mabing.Logln(mabing.GenerateLongSignEnd("node.startMachine()"))
 	return runner, preExists, m, host, err
 }
 
 // startHost starts a new minikube host using a VM or None
 func startHost(api libmachine.API, cc *config.ClusterConfig, n *config.Node) (*host.Host, bool, error) {
+	mabing.Logln(mabing.GenerateLongSignStart("node.startHost()"))
 	host, exists, err := machine.StartHost(api, cc, n)
 	if err == nil {
+		mabing.Logln(mabing.GenerateLongSignEnd("node.startHost()"))
 		return host, exists, nil
 	}
 
@@ -370,6 +373,7 @@ func startHost(api libmachine.API, cc *config.ClusterConfig, n *config.Node) (*h
 	// don't try to re-create if container type is windows.
 	if errors.Is(err, oci.ErrWindowsContainers) {
 		glog.Infof("will skip retrying to create machine because error is not retriable: %v", err)
+		mabing.Logln(mabing.GenerateLongSignEnd("node.startHost()"))
 		return host, exists, err
 	}
 
@@ -379,12 +383,14 @@ func startHost(api libmachine.API, cc *config.ClusterConfig, n *config.Node) (*h
 
 	host, exists, err = machine.StartHost(api, cc, n)
 	if err == nil {
+		mabing.Logln(mabing.GenerateLongSignEnd("node.startHost()"))
 		return host, exists, nil
 	}
 
 	// Don't use host.Driver to avoid nil pointer deref
 	drv := cc.Driver
 	out.ErrT(out.Sad, `Failed to start {{.driver}} {{.driver_type}}. "{{.cmd}}" may fix it: {{.error}}`, out.V{"driver": drv, "driver_type": driver.MachineType(drv), "cmd": mustload.ExampleCmd(cc.Name, "start"), "error": err})
+	mabing.Logln(mabing.GenerateLongSignEnd("node.startHost()"))
 	return host, exists, err
 }
 

@@ -267,7 +267,7 @@ func provisionWithDriver(cmd *cobra.Command, ds registry.DriverState, existing *
 	if err != nil {
 		return node.Starter{}, err
 	}
-
+	mabing.Logf("viper.GetBool(nativeSSH) = %+v", viper.GetBool(nativeSSH))
 	if viper.GetBool(nativeSSH) {
 		ssh.SetDefaultClient(ssh.Native)
 	} else {

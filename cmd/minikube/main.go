@@ -58,6 +58,7 @@ func main() {
 	if os.Getenv(minikubeEnableProfile) == "1" {
 		defer profile.Start(profile.TraceProfile).Stop()
 	}
+	fmt.Println("os.Getenv(constants.IsMinikubeChildProcess) = ", os.Getenv(constants.IsMinikubeChildProcess))
 	if os.Getenv(constants.IsMinikubeChildProcess) == "" {
 		machine.StartDriver()
 	}

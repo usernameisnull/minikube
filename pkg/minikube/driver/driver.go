@@ -80,7 +80,7 @@ func DisplaySupportedDrivers() string {
 
 // Supported returns if the driver is supported on this host.
 func Supported(name string) bool {
-	for _, d := range supportedDrivers { //mabing: 这里怎么根据操作系统的不同调用不同文件里的supportedDrivers的
+	for _, d := range supportedDrivers { //mabing: 使用了条件编译,https://studygolang.com/articles/154
 		if name == d {
 			return true
 		}

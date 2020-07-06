@@ -21,6 +21,8 @@ import (
 	"runtime"
 	"strings"
 
+	"k8s.io/minikube/mabing"
+
 	"github.com/golang/glog"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
@@ -44,6 +46,8 @@ const (
 
 // BeginCacheKubernetesImages caches images required for Kubernetes version in the background
 func beginCacheKubernetesImages(g *errgroup.Group, imageRepository string, k8sVersion string, cRuntime string) {
+	mabing.Logln(mabing.GenerateLongSignStart("beginCacheKubernetesImages"))
+	mabing.Logf("g = %+v, imageRepository = %+v, k8sVersion = %+v, cRuntime = %+v", g, imageRepository, k8sVersion, cRuntime)
 	// TODO: remove imageRepository check once #7695 is fixed
 	if imageRepository == "" && download.PreloadExists(k8sVersion, cRuntime) {
 		glog.Info("Caching tarball of preloaded images")
@@ -62,6 +66,7 @@ func beginCacheKubernetesImages(g *errgroup.Group, imageRepository string, k8sVe
 	g.Go(func() error {
 		return machine.CacheImagesForBootstrapper(imageRepository, k8sVersion, viper.GetString(cmdcfg.Bootstrapper))
 	})
+	mabing.Logln(mabing.GenerateLongSignEnd("beginCacheKubernetesImages"))
 }
 
 // HandleDownloadOnly caches appropariate binaries and images
