@@ -125,10 +125,10 @@ func platform() string {
 func runStart(cmd *cobra.Command, args []string) {
 	mabing.Logln(mabing.GenerateLongSignStart("runStart()"))
 	mabing.Logln("mabing, runStart(), cmd = ", cmd.Use)
-	displayVersion(version.GetVersion()) //mabing: * minikube v1.11.0 on Ubuntu 18.04
+	displayVersion(version.GetVersion()) //mabing: * minikube v1.11.0 on Ubuntu 18.04, 这个1.11.0是Makefile传过来的: MINIKUBE_LDFLAGS := -X k8s.io/minikube/pkg/version.version=$(VERSION)
 
 	// No need to do the update check if no one is going to see it
-	if !viper.GetBool(interactive) || !viper.GetBool(dryRun) {
+	if !viper.GetBool(interactive) || !viper.GetBool(dryRun) { // mabing: interactive=true
 		// Avoid blocking execution on optional HTTP fetches
 		mabing.Logln("mabing, runStart(), go notify.MaybePrintUpdateTextFromGithub() ")
 		go notify.MaybePrintUpdateTextFromGithub()
@@ -367,14 +367,17 @@ func displayVersion(version string) {
 
 // displayEnviron makes the user aware of environment variables that will affect how minikube operates
 func displayEnviron(env []string) {
+	mabing.Logln(mabing.GenerateLongSignStart("displayEnviron()"))
 	for _, kv := range env {
 		bits := strings.SplitN(kv, "=", 2)
 		k := bits[0]
 		v := bits[1]
 		if strings.HasPrefix(k, "MINIKUBE_") || k == constants.KubeconfigEnvVar {
+			mabing.Logf("操作系统环境变量: %+v = %+v", k, v)
 			out.T(out.Option, "{{.key}}={{.value}}", out.V{"key": k, "value": v})
 		}
 	}
+	mabing.Logln(mabing.GenerateLongSignStart("displayEnviron()"))
 }
 
 func showKubectlInfo(kcs *kubeconfig.Settings, k8sVersion string, machineName string) error {
