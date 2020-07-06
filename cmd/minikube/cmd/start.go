@@ -372,8 +372,8 @@ func displayEnviron(env []string) {
 		bits := strings.SplitN(kv, "=", 2)
 		k := bits[0]
 		v := bits[1]
+		mabing.Logf(`strings.HasPrefix(k, "MINIKUBE_") || k == constants.KubeconfigEnvVar: `, strings.HasPrefix(k, "MINIKUBE_") || k == constants.KubeconfigEnvVar)
 		if strings.HasPrefix(k, "MINIKUBE_") || k == constants.KubeconfigEnvVar {
-			mabing.Logf("操作系统环境变量: %+v = %+v", k, v)
 			out.T(out.Option, "{{.key}}={{.value}}", out.V{"key": k, "value": v})
 		}
 	}
