@@ -134,7 +134,7 @@ type ListOptions struct {
 
 // New returns an appropriately configured runtime
 func New(c Config) (Manager, error) {
-	mabing.GenerateLongSignStart("cruntime.New()")
+	mabing.Logln(mabing.GenerateLongSignStart("cruntime.New()"))
 	sm := sysinit.New(c.Runner)
 	if sm == nil {
 		mabing.Logln("mabing, cruntime.New(), sm = nil")
@@ -144,7 +144,7 @@ func New(c Config) (Manager, error) {
 	switch c.Type {
 	case "", "docker":
 		mabing.Logln("mabing, cruntime.New(), c.Type = docker")
-		mabing.GenerateLongSignEnd("cruntime.New()")
+		mabing.Logln(mabing.GenerateLongSignEnd("cruntime.New()"))
 		return &Docker{
 			Socket: c.Socket,
 			Runner: c.Runner,

@@ -21,6 +21,8 @@ import (
 	"errors"
 	"os/exec"
 
+	"k8s.io/minikube/mabing"
+
 	"k8s.io/minikube/pkg/minikube/assets"
 )
 
@@ -63,10 +65,12 @@ func (s *Systemd) Enable(svc string) error {
 
 // Start starts a service
 func (s *Systemd) Start(svc string) error {
+	mabing.Logln(mabing.GenerateLongSignStart("(s *Systemd) Start()"))
 	if err := s.reload(); err != nil {
 		return err
 	}
 	_, err := s.r.RunCmd(exec.Command("sudo", "systemctl", "start", svc))
+	mabing.Logln(mabing.GenerateLongSignEnd("(s *Systemd) Start()"))
 	return err
 }
 

@@ -173,6 +173,7 @@ func createHost(api libmachine.API, cfg *config.ClusterConfig, n *config.Node) (
 		mabing.Logln(mabing.GenerateLongSignEnd("createHost()"))
 		return nil, errors.Wrap(err, "creating host")
 	}
+	mabing.CheckDocker()
 	glog.Infof("duration metric: libmachine.API.Create for %q took %s", cfg.Name, time.Since(cstart))
 
 	if err := postStartSetup(h, *cfg); err != nil {

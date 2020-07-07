@@ -182,7 +182,7 @@ func Start(starter Starter, apiServer bool) (*kubeconfig.Settings, error) {
 	}
 
 	wg.Wait()
-	mabing.GenerateLongSignEnd("node.Start()")
+	mabing.Logln(mabing.GenerateLongSignEnd("node.Start()"))
 	// Write enabled addons to the config before completion
 	return kcs, config.Write(viper.GetString(config.ProfileName), starter.Cfg)
 }
@@ -220,6 +220,7 @@ func Provision(cc *config.ClusterConfig, n *config.Node, apiServer bool) (comman
 
 // ConfigureRuntimes does what needs to happen to get a runtime going.
 func configureRuntimes(runner cruntime.CommandRunner, cc config.ClusterConfig, kv semver.Version) cruntime.Manager {
+	mabing.Logln(mabing.GenerateLongSignStart("configureRuntimes()"))
 	co := cruntime.Config{
 		Type:              cc.KubernetesConfig.ContainerRuntime,
 		Runner:            runner,
@@ -252,12 +253,12 @@ func configureRuntimes(runner cruntime.CommandRunner, cc config.ClusterConfig, k
 			}
 		}
 	}
-
-	err = cr.Enable(disableOthers, forceSystemd())
+	mabing.Logf("mabing, disableOthers = %+v, forceSystemd() = %+v", disableOthers, forceSystemd())
+	err = cr.Enable(disableOthers, forceSystemd()) // mabing: 这里用的的是Docker的, 因为上面2个都为false,这里进入函数其实没有执行
 	if err != nil {
 		exit.WithError("Failed to enable container runtime", err)
 	}
-
+	mabing.Logln(mabing.GenerateLongSignEnd("configureRuntimes()"))
 	return cr
 }
 

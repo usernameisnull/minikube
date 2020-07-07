@@ -23,6 +23,8 @@ import (
 	"strings"
 	"time"
 
+	"k8s.io/minikube/mabing"
+
 	"github.com/golang/glog"
 	"github.com/pkg/errors"
 	"k8s.io/minikube/pkg/minikube/assets"
@@ -104,6 +106,7 @@ func (r *Docker) Active() bool {
 
 // Enable idempotently enables Docker on a host
 func (r *Docker) Enable(disOthers, forceSystemd bool) error {
+	mabing.Logln(mabing.GenerateLongSignStart("(r *Docker) Enable()"))
 	if disOthers {
 		if err := disableOthers(r, r.Runner); err != nil {
 			glog.Warningf("disableOthers: %v", err)
@@ -116,7 +119,7 @@ func (r *Docker) Enable(disOthers, forceSystemd bool) error {
 		}
 		return r.Init.Restart("docker")
 	}
-
+	mabing.Logln(mabing.GenerateLongSignEnd("(r *Docker) Enable()"))
 	return r.Init.Start("docker")
 }
 
