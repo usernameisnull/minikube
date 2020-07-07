@@ -214,7 +214,7 @@ func ClusterFlagValue() string {
 // generateClusterConfig generate a config.ClusterConfig based on flags or existing cluster config
 func generateClusterConfig(cmd *cobra.Command, existing *config.ClusterConfig, k8sVersion string, drvName string) (config.ClusterConfig, config.Node, error) {
 	mabing.Logln(mabing.GenerateLongSignStart("generateClusterConfig()"))
-	mabing.Logf("mabing, generateClusterConfig(), cmd = %+v, existing = %+v, k8sVersion = %+v, drvName = %+v", cmd, existing, k8sVersion, drvName)
+	mabing.Logf("mabing, generateClusterConfig(), cmd.Use = %+v, cmd.existing = %+v, k8sVersion = %+v, drvName = %+v", cmd.Use, existing, k8sVersion, drvName)
 	var cc config.ClusterConfig
 	if existing != nil { // create profile config first time
 		cc = updateExistingConfigFromFlags(cmd, existing)
@@ -328,7 +328,7 @@ func generateClusterConfig(cmd *cobra.Command, existing *config.ClusterConfig, k
 				ExtraOptions:           config.ExtraOptions,
 				ShouldLoadCachedImages: viper.GetBool(cacheImages),
 				EnableDefaultCNI:       selectedEnableDefaultCNI,
-				NodePort:               viper.GetInt(apiServerPort),
+				NodePort:               viper.GetInt(apiServerPort), //mabing: 默认值是8443
 			},
 		}
 		cc.VerifyComponents = interpretWaitFlag(*cmd)

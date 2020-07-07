@@ -190,6 +190,7 @@ func SaveProfile(name string, cfg *ClusterConfig, miniHome ...string) error {
 	if err = os.Rename(tf.Name(), path); err != nil {
 		return err
 	}
+	mabing.Logln(mabing.GenerateLongSignEnd("SaveProfile()"))
 	return nil
 }
 

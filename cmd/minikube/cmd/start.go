@@ -240,7 +240,7 @@ func provisionWithDriver(cmd *cobra.Command, ds registry.DriverState, existing *
 	if err != nil {
 		return node.Starter{}, errors.Wrap(err, "Failed to generate config")
 	}
-
+	mabing.Logf("mabing, provisionWithDriver(), viper.GetBool(dryRun) = %+v", viper.GetBool(dryRun))
 	// This is about as far as we can go without overwriting config files
 	if viper.GetBool(dryRun) {
 		out.T(out.DryRun, `dry-run validation complete!`)
@@ -256,6 +256,7 @@ func provisionWithDriver(cmd *cobra.Command, ds registry.DriverState, existing *
 	}
 
 	var existingAddons map[string]bool
+	mabing.Logf("mabing, provisionWithDriver(), viper.GetBool(installAddons) = %+v", viper.GetBool(installAddons))
 	if viper.GetBool(installAddons) {
 		existingAddons = map[string]bool{}
 		if existing != nil && existing.Addons != nil {
@@ -372,7 +373,7 @@ func displayEnviron(env []string) {
 		bits := strings.SplitN(kv, "=", 2)
 		k := bits[0]
 		v := bits[1]
-		mabing.Logf(`strings.HasPrefix(k, "MINIKUBE_") || k == constants.KubeconfigEnvVar: `, strings.HasPrefix(k, "MINIKUBE_") || k == constants.KubeconfigEnvVar)
+		mabing.Logf(`mabing, strings.HasPrefix(%+v, "MINIKUBE_") || %+v == %+v: %+v`, k, k, constants.KubeconfigEnvVar, strings.HasPrefix(k, "MINIKUBE_") || k == constants.KubeconfigEnvVar)
 		if strings.HasPrefix(k, "MINIKUBE_") || k == constants.KubeconfigEnvVar {
 			out.T(out.Option, "{{.key}}={{.value}}", out.V{"key": k, "value": v})
 		}
@@ -912,6 +913,8 @@ func validateRegistryMirror() {
 }
 
 func createNode(cc config.ClusterConfig, kubeNodeName string, existing *config.ClusterConfig) (config.ClusterConfig, config.Node, error) {
+	mabing.Logln(mabing.GenerateLongSignStart("createNode()"))
+	mabing.Logf("mabing, existing = %+v", existing)
 	// Create the initial node, which will necessarily be a control plane
 	if existing != nil {
 		cp, err := config.PrimaryControlPlane(existing)
@@ -939,7 +942,9 @@ func createNode(cc config.ClusterConfig, kubeNodeName string, existing *config.C
 		ControlPlane:      true,
 		Worker:            true,
 	}
+	mabing.Logf("mabing, createNode(), cp.Port = %+v, cp.KubernetesVersion = %+v, cp.Name = %+v, cp.ControlPlane = %+v, cp.Worker = %+v", cp.Port, cp.KubernetesVersion, cp.Name, cp.ControlPlane, cp.Worker)
 	cc.Nodes = []config.Node{cp}
+	mabing.Logln(mabing.GenerateLongSignEnd("createNode()"))
 	return cc, cp, nil
 }
 

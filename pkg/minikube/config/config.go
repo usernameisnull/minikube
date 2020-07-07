@@ -180,6 +180,7 @@ func (c *simpleConfigLoader) LoadConfigFromFile(profileName string, miniHome ...
 	mabing.Logln("mabing, (c *simpleConfigLoader) LoadConfigFromFile,path = ", path)
 	if _, err := os.Stat(path); err != nil {
 		if os.IsNotExist(err) {
+			mabing.Logln(mabing.GenerateLongSignEnd("LoadConfigFromFile().1"))
 			return nil, &ErrNotExist{fmt.Sprintf("cluster %q does not exist", profileName)}
 		}
 		return nil, errors.Wrap(err, "stat")

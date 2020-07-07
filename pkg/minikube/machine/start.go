@@ -125,6 +125,7 @@ func engineOptions(cfg config.ClusterConfig) *engine.Options {
 }
 
 func createHost(api libmachine.API, cfg *config.ClusterConfig, n *config.Node) (*host.Host, error) {
+	mabing.Logln(mabing.GenerateLongSignStart("createHost()"))
 	glog.Infof("createHost starting for %q (driver=%q)", n.Name, cfg.Driver)
 	start := time.Now()
 	defer func() {
@@ -138,21 +139,26 @@ func createHost(api libmachine.API, cfg *config.ClusterConfig, n *config.Node) (
 			To disable this message, run [minikube config set ShowDriverDeprecationNotification false]`)
 	}
 	showHostInfo(*cfg)
+	mabing.Logf("mabing, createHost(), cfg.Driver = %+v", cfg.Driver)
 	def := registry.Driver(cfg.Driver)
 	if def.Empty() {
+		mabing.Logln(mabing.GenerateLongSignEnd("createHost()"))
 		return nil, fmt.Errorf("unsupported/missing driver: %s", cfg.Driver)
 	}
 	dd, err := def.Config(*cfg, *n)
 	if err != nil {
+		mabing.Logln(mabing.GenerateLongSignEnd("createHost()"))
 		return nil, errors.Wrap(err, "config")
 	}
 	data, err := json.Marshal(dd)
 	if err != nil {
+		mabing.Logln(mabing.GenerateLongSignEnd("createHost()"))
 		return nil, errors.Wrap(err, "marshal")
 	}
-
+	mabing.Logf("mabing, createHost(), data = %s", string(data))
 	h, err := api.NewHost(cfg.Driver, data)
 	if err != nil {
+		mabing.Logln(mabing.GenerateLongSignEnd("createHost()"))
 		return nil, errors.Wrap(err, "new host")
 	}
 
@@ -164,17 +170,21 @@ func createHost(api libmachine.API, cfg *config.ClusterConfig, n *config.Node) (
 	glog.Infof("libmachine.API.Create for %q (driver=%q)", cfg.Name, cfg.Driver)
 
 	if err := timedCreateHost(h, api, 4*time.Minute); err != nil {
+		mabing.Logln(mabing.GenerateLongSignEnd("createHost()"))
 		return nil, errors.Wrap(err, "creating host")
 	}
 	glog.Infof("duration metric: libmachine.API.Create for %q took %s", cfg.Name, time.Since(cstart))
 
 	if err := postStartSetup(h, *cfg); err != nil {
+		mabing.Logln(mabing.GenerateLongSignEnd("createHost()"))
 		return h, errors.Wrap(err, "post-start")
 	}
 
 	if err := saveHost(api, h, cfg, n); err != nil {
+		mabing.Logln(mabing.GenerateLongSignEnd("createHost()"))
 		return h, err
 	}
+	mabing.Logln(mabing.GenerateLongSignEnd("createHost()"))
 	return h, nil
 }
 
