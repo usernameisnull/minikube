@@ -89,7 +89,7 @@ func Start(starter Starter, apiServer bool) (*kubeconfig.Settings, error) {
 
 	// configure the runtime (docker, containerd, crio)
 	cr := configureRuntimes(starter.Runner, *starter.Cfg, sv)
-	showVersionInfo(starter.Node.KubernetesVersion, cr)
+	showVersionInfo(starter.Node.KubernetesVersion, cr) // mabing: * Preparing Kubernetes v1.16.2 on Docker 18.09.7 ...
 
 	// Add "host.minikube.internal" DNS alias (intentionally non-fatal)
 	hostIP, err := cluster.HostIP(starter.Host)
@@ -291,8 +291,8 @@ func setupKubeAdm(mAPI libmachine.API, cfg config.ClusterConfig, n config.Node, 
 }
 
 func setupKubeconfig(h *host.Host, cc *config.ClusterConfig, n *config.Node, clusterName string) *kubeconfig.Settings {
-	mabing.GenerateLongSignStart("node.setupKubeconfig()")
-	mabing.Logf("mabing, node.setupKubeconfig(), h = %+v, cc = %+v, n = %+v, clusterName = %+v", h, cc, n, clusterName)
+	mabing.Logln(mabing.GenerateLongSignStart("node.setupKubeconfig()"))
+	mabing.Logf("mabing, node.setupKubeconfig(), h = %+v\n cc = %+v\n n = %+v\n clusterName = %+v", h, cc, n, clusterName)
 	addr, err := apiServerURL(*h, *cc, *n)
 	if err != nil {
 		exit.WithError("Failed to get API Server URL", err)
@@ -312,7 +312,7 @@ func setupKubeconfig(h *host.Host, cc *config.ClusterConfig, n *config.Node, clu
 	}
 	mabing.Logf("mabing, node.setupKubeconfig(),kubeconfig.PathFromEnv() = %+v", kubeconfig.PathFromEnv())
 	kcs.SetPath(kubeconfig.PathFromEnv())
-	mabing.GenerateLongSignEnd("node.setupKubeconfig()")
+	mabing.Logln(mabing.GenerateLongSignEnd("node.setupKubeconfig()"))
 	return kcs
 }
 
