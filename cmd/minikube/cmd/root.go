@@ -71,8 +71,8 @@ var RootCmd = &cobra.Command{
 		}
 
 		logDir := pflag.Lookup("log_dir")
-		fmt.Println("mabing, RootCmd, logDir = ", logDir.Value, "logDir.Changed = ", logDir.Changed)
-		if !logDir.Changed {
+		fmt.Printf("mabing, RootCmd, logDir = %+v , logDiR.Changed = %+v\n", logDir.Value, logDir.Changed)
+		if !logDir.Changed { // mabing: logDir总是为true,算是个bug
 			if err := logDir.Value.Set(localpath.MakeMiniPath("logs")); err != nil {
 				exit.WithError("logdir set failed", err)
 			}
