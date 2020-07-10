@@ -23,6 +23,8 @@ import (
 	"reflect"
 	"regexp"
 
+	"k8s.io/minikube/mabing"
+
 	"github.com/docker/machine/libmachine"
 	"github.com/docker/machine/libmachine/host"
 	"github.com/pkg/errors"
@@ -33,6 +35,7 @@ import (
 
 // HostIP gets the ip address to be used for mapping host -> VM and VM -> host
 func HostIP(host *host.Host) (net.IP, error) {
+	mabing.Logln(mabing.GenerateLongSignStart("HostIP()"))
 	switch host.DriverName {
 	case driver.Docker:
 		return oci.RoutableHostIPFromInside(oci.Docker, host.Name)
@@ -104,6 +107,8 @@ func HostIP(host *host.Host) (net.IP, error) {
 		}
 		return net.IPv4(vmIP[0], vmIP[1], vmIP[2], byte(1)), nil
 	case driver.None:
+		mabing.Logf("mabing, HostIP(), driver.None = %+v", driver.None)
+		mabing.Logln(mabing.GenerateLongSignEnd("HostIP()"))
 		return net.ParseIP("127.0.0.1"), nil
 	default:
 		return []byte{}, fmt.Errorf("HostIP not yet implemented for %q driver", host.DriverName)
