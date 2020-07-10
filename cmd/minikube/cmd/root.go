@@ -172,6 +172,7 @@ func setFlagsUsingViper() {
 }
 
 func init() {
+	fmt.Println("=========================cmd/minikube/cmd/root.go init()")
 	translate.DetermineLocale()
 	RootCmd.PersistentFlags().StringP(config.ProfileName, "p", constants.DefaultClusterName, `The name of the minikube VM being used. This can be set to allow having multiple instances of minikube independently.`)
 	RootCmd.PersistentFlags().StringP(configCmd.Bootstrapper, "b", "kubeadm", "The name of the cluster bootstrapper that will set up the Kubernetes cluster.")
@@ -244,6 +245,7 @@ func init() {
 	if err := viper.BindPFlags(RootCmd.PersistentFlags()); err != nil {
 		exit.WithError("Unable to bind flags", err)
 	}
+	setFlagsUsingViper()
 	cobra.OnInitialize(initConfig)
 
 }
@@ -278,7 +280,7 @@ func setupViper() {
 	viper.SetDefault(config.WantNoneDriverWarning, true)
 	viper.SetDefault(config.ShowDriverDeprecationNotification, true)
 	viper.SetDefault(config.ShowBootstrapperDeprecationNotification, true)
-	setFlagsUsingViper()
+	//setFlagsUsingViper()
 }
 
 func addToPath(dir string) {
