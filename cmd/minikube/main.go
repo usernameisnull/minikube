@@ -52,7 +52,6 @@ var (
 )
 
 func main() {
-	fmt.Println("---------------------main() start---------------------------")
 	bridgeLogMessages()
 	defer glog.Flush()
 	if os.Getenv(minikubeEnableProfile) == "1" {
@@ -84,7 +83,7 @@ func (lb stdLogBridge) Write(b []byte) (n int, err error) {
 	// Split "d.go:23: message" into "d.go", "23", and "message".
 	parts := bytes.SplitN(b, []byte{':'}, 3)
 	if len(parts) != 3 || len(parts[0]) < 1 || len(parts[2]) < 1 {
-		glog.Errorf("bad log format: %s", b) // mabing: 是不是因为过早的使用glog导致对应的参数变量没有传递进去?
+		glog.Errorf("bad log format: %s", b)
 		return
 	}
 

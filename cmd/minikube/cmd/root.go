@@ -154,17 +154,19 @@ func usageTemplate() string {
 // Handle config values for flags used in external packages (e.g. glog)
 // by setting them directly, using values from viper when not passed in as args
 func setFlagsUsingViper() {
-	for _, config := range viperWhiteList {
-		var a = pflag.Lookup(config)
-		fmt.Printf("setFlagsUsingViper1==========,a.Name = `%+v`, a.Value.String() = `%+v`\n", a.Name, a.Value.String())
-		viper.SetDefault(a.Name, a.DefValue)
+	fmt.Println("mabing, setFlagsUsingViper()")
+	for _, item := range viperWhiteList {
+		var a = pflag.Lookup(item)
+		fmt.Printf("mabing, setFlagsUsingViper(),a.Name = `%+v`, a.Value.String() = `%+v` viper.GetString(a.Name) = `%+v`\n", a.Name, a.Value.String(), viper.GetString(a.Name))
+		//viper.SetDefault(a.Name, a.DefValue)
 		// If the flag is set, override viper value
 		if a.Changed {
 			viper.Set(a.Name, a.Value.String())
 		}
 		// Viper will give precedence first to calls to the Set command,
 		// then to values from the config.yml
-		if err := a.Value.Set(viper.GetString(a.Name)); err != nil {
+		//if err := a.Value.Set(viper.GetString(a.Name)); err != nil {
+		if err := a.Value.Set(a.Value.String()); err != nil {
 			exit.WithError(fmt.Sprintf("failed to set value for %q", a.Name), err)
 		}
 		a.Changed = true
@@ -172,7 +174,7 @@ func setFlagsUsingViper() {
 }
 
 func init() {
-	fmt.Println("=========================cmd/minikube/cmd/root.go init()")
+	fmt.Println("mabing, root.init()")
 	translate.DetermineLocale()
 	RootCmd.PersistentFlags().StringP(config.ProfileName, "p", constants.DefaultClusterName, `The name of the minikube VM being used. This can be set to allow having multiple instances of minikube independently.`)
 	RootCmd.PersistentFlags().StringP(configCmd.Bootstrapper, "b", "kubeadm", "The name of the cluster bootstrapper that will set up the Kubernetes cluster.")
@@ -245,7 +247,6 @@ func init() {
 	if err := viper.BindPFlags(RootCmd.PersistentFlags()); err != nil {
 		exit.WithError("Unable to bind flags", err)
 	}
-	setFlagsUsingViper()
 	cobra.OnInitialize(initConfig)
 
 }
@@ -280,7 +281,7 @@ func setupViper() {
 	viper.SetDefault(config.WantNoneDriverWarning, true)
 	viper.SetDefault(config.ShowDriverDeprecationNotification, true)
 	viper.SetDefault(config.ShowBootstrapperDeprecationNotification, true)
-	//setFlagsUsingViper()
+	setFlagsUsingViper()
 }
 
 func addToPath(dir string) {
