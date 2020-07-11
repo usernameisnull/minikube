@@ -20,6 +20,8 @@ import (
 	"flag"
 	"fmt"
 
+	"k8s.io/minikube/mabing"
+
 	"github.com/docker/machine/libmachine"
 	"github.com/docker/machine/libmachine/ssh"
 	"github.com/pkg/errors"
@@ -47,10 +49,12 @@ func init() {
 
 // Bootstrapper returns a new bootstrapper for the cluster
 func Bootstrapper(api libmachine.API, bootstrapperName string, cc config.ClusterConfig, r command.Runner) (bootstrapper.Bootstrapper, error) {
+	mabing.Logln(mabing.GenerateLongSignStart("cluster.Bootstrapper()"))
 	var b bootstrapper.Bootstrapper
 	var err error
 	switch bootstrapperName {
 	case bootstrapper.Kubeadm:
+		mabing.Logln("mabing, cluster.Bootstrapper(), 为bootstrapper.Kubeadm时, 就创建了个新的结构体就返回了")
 		b, err = kubeadm.NewBootstrapper(api, cc, r)
 		if err != nil {
 			return nil, errors.Wrap(err, "getting a new kubeadm bootstrapper")
@@ -58,6 +62,7 @@ func Bootstrapper(api libmachine.API, bootstrapperName string, cc config.Cluster
 	default:
 		return nil, fmt.Errorf("unknown bootstrapper: %s", bootstrapperName)
 	}
+	mabing.Logln(mabing.GenerateLongSignEnd("cluster.Bootstrapper()"))
 	return b, nil
 }
 

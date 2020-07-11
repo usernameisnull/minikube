@@ -21,6 +21,8 @@ import (
 	"path/filepath"
 	"sync/atomic"
 
+	"k8s.io/minikube/mabing"
+
 	"github.com/golang/glog"
 	"github.com/juju/mutex"
 	"github.com/pkg/errors"
@@ -119,6 +121,7 @@ func PopulateFromSettings(cfg *Settings, apiCfg *api.Config) error {
 // activeContext is true when minikube is the CurrentContext
 // If no CurrentContext is set, the given name will be used.
 func Update(kcs *Settings) error {
+	mabing.Logln(mabing.GenerateLongSignStart("kubeconfig.Update"))
 	spec := lock.PathMutexSpec(filepath.Join(kcs.filePath(), "settings.Update"))
 	glog.Infof("acquiring lock: %+v", spec)
 	releaser, err := mutex.Acquire(spec)
@@ -143,5 +146,6 @@ func Update(kcs *Settings) error {
 	if err := writeToFile(kcfg, kcs.filePath()); err != nil {
 		return errors.Wrap(err, "writing kubeconfig")
 	}
+	mabing.Logln(mabing.GenerateLongSignEnd("kubeconfig.Update"))
 	return nil
 }

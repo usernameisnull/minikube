@@ -119,6 +119,7 @@ func (r *Docker) Enable(disOthers, forceSystemd bool) error {
 		}
 		return r.Init.Restart("docker")
 	}
+	mabing.Logf("mabing, next->pkg/minikube/sysinit/systemd.go, (s *Systemd) Start(svc string), line 67 ")
 	mabing.Logln(mabing.GenerateLongSignEnd("(r *Docker) Enable()"))
 	return r.Init.Start("docker")
 }
@@ -305,6 +306,7 @@ func (r *Docker) forceSystemd() error {
 // 2. Extract the preloaded tarball to the correct directory
 // 3. Remove the tarball within the VM
 func (r *Docker) Preload(cfg config.KubernetesConfig) error {
+	mabing.Logln(mabing.GenerateLongSignStart("pkg/minikube/cruntime/docker.go.Preload"))
 	if !download.PreloadExists(cfg.KubernetesVersion, cfg.ContainerRuntime) {
 		return nil
 	}
@@ -365,6 +367,7 @@ func (r *Docker) Preload(cfg config.KubernetesConfig) error {
 	if err := refStore.Update(); err != nil {
 		glog.Infof("error updating reference store: %v", err)
 	}
+	mabing.Logln(mabing.GenerateLongSignEnd("pkg/minikube/cruntime/docker.go.Preload"))
 	return r.Restart()
 }
 

@@ -83,7 +83,7 @@ var RootCmd = &cobra.Command{
 // Execute adds all child commands to the root command sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
-	fmt.Println(mabing.GenerateLongSignStart("root.Execute()"))
+	fmt.Println(mabing.GenerateLongSignStart("cmd/minikube/cmd/root.go.Execute()"))
 	for _, c := range RootCmd.Commands() {
 		c.Short = translate.T(c.Short)
 		c.Long = translate.T(c.Long)
@@ -118,7 +118,7 @@ func Execute() {
 		// Cobra already outputs the error, typically because the user provided an unknown command.
 		os.Exit(exit.BadUsage)
 	}
-	fmt.Println(mabing.GenerateLongSignEnd("root.Execute()"))
+	fmt.Println(mabing.GenerateLongSignEnd("cmd/minikube/cmd/root.go.Execute()"))
 }
 
 // usageTemplate just calls translate.T on the default usage template
@@ -174,7 +174,7 @@ func setFlagsUsingViper() {
 }
 
 func init() {
-	fmt.Println("mabing, root.init()")
+	fmt.Println("mabing, cmd/minikube/cmd/root.go.init()")
 	translate.DetermineLocale()
 	RootCmd.PersistentFlags().StringP(config.ProfileName, "p", constants.DefaultClusterName, `The name of the minikube VM being used. This can be set to allow having multiple instances of minikube independently.`)
 	RootCmd.PersistentFlags().StringP(configCmd.Bootstrapper, "b", "kubeadm", "The name of the cluster bootstrapper that will set up the Kubernetes cluster.")
@@ -253,6 +253,7 @@ func init() {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
+	mabing.Logln(mabing.GenerateLongSignStart("initConfig()"))
 	configPath := localpath.ConfigFile()
 	mabing.Logln("mabing, initConfig(), viper的配置文件: ", configPath) // /root/.minikube/profiles/minikube/config.json
 	viper.SetConfigFile(configPath)
@@ -264,6 +265,7 @@ func initConfig() {
 		}
 	}
 	setupViper()
+	mabing.Logln(mabing.GenerateLongSignEnd("initConfig()"))
 }
 
 func setupViper() {

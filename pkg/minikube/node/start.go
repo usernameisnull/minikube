@@ -254,6 +254,7 @@ func configureRuntimes(runner cruntime.CommandRunner, cc config.ClusterConfig, k
 		}
 	}
 	mabing.Logf("mabing, disableOthers = %+v, forceSystemd() = %+v", disableOthers, forceSystemd())
+	mabing.Logf("mabing, next->pkg/minikube/cruntime/docker.go, (r *Docker) Enable, line 108 ")
 	err = cr.Enable(disableOthers, forceSystemd()) // mabing: 这里用的的是Docker的, 因为上面2个都为false,这里进入函数其实没有执行
 	if err != nil {
 		exit.WithError("Failed to enable container runtime", err)
@@ -268,12 +269,13 @@ func forceSystemd() bool {
 
 // setupKubeAdm adds any requested files into the VM before Kubernetes is started
 func setupKubeAdm(mAPI libmachine.API, cfg config.ClusterConfig, n config.Node, r command.Runner) bootstrapper.Bootstrapper {
-	mabing.GenerateLongSignStart("setupKubeAdm()")
+	mabing.Logln(mabing.GenerateLongSignStart("setupKubeAdm()"))
 	bs, err := cluster.Bootstrapper(mAPI, viper.GetString(cmdcfg.Bootstrapper), cfg, r)
 	if err != nil {
 		exit.WithError("Failed to get bootstrapper", err)
 	}
 	for _, eo := range config.ExtraOptions {
+		mabing.Logf("mabing, node.setupKubeAdm, eo.Component = %+v, eo.Key = %+v, eo.Value = %+v", eo.Component, eo.Key, eo.Value)
 		out.T(out.Option, "{{.extra_option_component_name}}.{{.key}}={{.value}}", out.V{"extra_option_component_name": eo.Component, "key": eo.Key, "value": eo.Value})
 	}
 	// Loads cached images, generates config files, download binaries
@@ -286,7 +288,7 @@ func setupKubeAdm(mAPI libmachine.API, cfg config.ClusterConfig, n config.Node, 
 	if err := bs.SetupCerts(cfg.KubernetesConfig, n); err != nil {
 		exit.WithError("Failed to setup certs", err)
 	}
-	mabing.GenerateLongSignEnd("setupKubeAdm()")
+	mabing.Logln(mabing.GenerateLongSignEnd("setupKubeAdm()"))
 	return bs
 }
 

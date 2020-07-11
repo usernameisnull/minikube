@@ -292,7 +292,7 @@ func (k *Bootstrapper) unpause(cfg config.ClusterConfig) error {
 
 // StartCluster starts the cluster
 func (k *Bootstrapper) StartCluster(cfg config.ClusterConfig) error {
-	mabing.GenerateLongSignStart("kubeadm.StartCluster()")
+	mabing.Logln(mabing.GenerateLongSignStart("kubeadm.StartCluster()"))
 	start := time.Now()
 	glog.Infof("StartCluster: %+v", cfg)
 	defer func() {
@@ -333,7 +333,7 @@ func (k *Bootstrapper) StartCluster(cfg config.ClusterConfig) error {
 	if err := k.DeleteCluster(cfg.KubernetesConfig); err != nil {
 		glog.Warningf("delete failed: %v", err)
 	}
-	mabing.GenerateLongSignEnd("kubeadm.StartCluster()")
+	mabing.Logln(mabing.GenerateLongSignEnd("kubeadm.StartCluster()"))
 	return k.init(cfg)
 }
 
@@ -710,11 +710,12 @@ func (k *Bootstrapper) SetupCerts(k8s config.KubernetesConfig, n config.Node) er
 
 // UpdateCluster updates the cluster.
 func (k *Bootstrapper) UpdateCluster(cfg config.ClusterConfig) error {
+	mabing.Logln(mabing.GenerateLongSignStart("pkg/minikube/bootstrapper/kubeadm/kubeadm.go,UpdateCluster()"))
 	images, err := images.Kubeadm(cfg.KubernetesConfig.ImageRepository, cfg.KubernetesConfig.KubernetesVersion)
 	if err != nil {
 		return errors.Wrap(err, "kubeadm images")
 	}
-
+	mabing.Logf("mabing, UpdateCluster(), images = %+v", images)
 	r, err := cruntime.New(cruntime.Config{Type: cfg.KubernetesConfig.ContainerRuntime,
 		Runner: k.c, Socket: cfg.KubernetesConfig.CRISocket})
 	if err != nil {
@@ -724,7 +725,7 @@ func (k *Bootstrapper) UpdateCluster(cfg config.ClusterConfig) error {
 	if err := r.Preload(cfg.KubernetesConfig); err != nil {
 		glog.Infof("prelaoding failed, will try to load cached images: %v", err)
 	}
-
+	mabing.Logf("mabing, UpdateCluster(), cfg.KubernetesConfig.ShouldLoadCachedImages = %+v", cfg.KubernetesConfig.ShouldLoadCachedImages)
 	if cfg.KubernetesConfig.ShouldLoadCachedImages {
 		if err := machine.LoadImages(&cfg, k.c, images, constants.ImageCacheDir); err != nil {
 			out.FailureT("Unable to load cached images: {{.error}}", out.V{"error": err})
@@ -737,12 +738,13 @@ func (k *Bootstrapper) UpdateCluster(cfg config.ClusterConfig) error {
 			return errors.Wrap(err, "updating node")
 		}
 	}
-
+	mabing.Logln(mabing.GenerateLongSignEnd("pkg/minikube/bootstrapper/kubeadm/kubeadm.go,UpdateCluster()"))
 	return nil
 }
 
 // UpdateNode updates a node.
 func (k *Bootstrapper) UpdateNode(cfg config.ClusterConfig, n config.Node, r cruntime.Manager) error {
+	mabing.Logln(mabing.GenerateLongSignStart("kubeadm.UpdateNode"))
 	kubeadmCfg, err := bsutil.GenerateKubeadmYAML(cfg, n, r)
 	if err != nil {
 		return errors.Wrap(err, "generating kubeadm cfg")
@@ -802,7 +804,7 @@ func (k *Bootstrapper) UpdateNode(cfg config.ClusterConfig, n config.Node, r cru
 	if err := machine.AddHostAlias(k.c, constants.ControlPlaneAlias, net.ParseIP(cp.IP)); err != nil {
 		return errors.Wrap(err, "host alias")
 	}
-
+	mabing.Logln(mabing.GenerateLongSignEnd("kubeadm.UpdateNode"))
 	return sm.Start("kubelet")
 }
 

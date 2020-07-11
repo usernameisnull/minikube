@@ -29,6 +29,8 @@ import (
 	"sort"
 	"strings"
 
+	"k8s.io/minikube/mabing"
+
 	"github.com/golang/glog"
 	"github.com/otiai10/copy"
 	"github.com/pkg/errors"
@@ -48,6 +50,7 @@ import (
 
 // SetupCerts gets the generated credentials required to talk to the APIServer.
 func SetupCerts(cmd command.Runner, k8s config.KubernetesConfig, n config.Node) ([]assets.CopyableFile, error) {
+	mabing.Logln(mabing.GenerateLongSignStart("pkg/minikube/bootstrapper/certs.go, SetupCerts()"))
 	localPath := localpath.Profile(k8s.ClusterName)
 	glog.Infof("Setting up %s for IP: %s\n", localPath, n.IP)
 
@@ -126,6 +129,7 @@ func SetupCerts(cmd command.Runner, k8s config.KubernetesConfig, n config.Node) 
 	if err := installCertSymlinks(cmd, caCerts); err != nil {
 		return nil, errors.Wrapf(err, "certificate symlinks")
 	}
+	mabing.Logln(mabing.GenerateLongSignEnd("pkg/minikube/bootstrapper/certs.go, SetupCerts()"))
 	return copyableFiles, nil
 }
 

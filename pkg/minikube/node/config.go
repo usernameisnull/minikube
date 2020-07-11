@@ -24,6 +24,8 @@ import (
 	"strconv"
 	"sync"
 
+	"k8s.io/minikube/mabing"
+
 	"github.com/golang/glog"
 	"github.com/spf13/viper"
 	"k8s.io/minikube/pkg/minikube/config"
@@ -48,6 +50,7 @@ func showVersionInfo(k8sVersion string, cr cruntime.Manager) {
 
 // configureMounts configures any requested filesystem mounts
 func configureMounts(wg *sync.WaitGroup) {
+	mabing.Logln(mabing.GenerateLongSignStart("node.configureMounts()"))
 	wg.Add(1)
 	defer wg.Done()
 
@@ -73,4 +76,5 @@ func configureMounts(wg *sync.WaitGroup) {
 	if err := lock.WriteFile(filepath.Join(localpath.MiniPath(), constants.MountProcessFileName), []byte(strconv.Itoa(mountCmd.Process.Pid)), 0644); err != nil {
 		exit.WithError("Error writing mount pid", err)
 	}
+	mabing.Logln(mabing.GenerateLongSignEnd("node.configureMounts()"))
 }
