@@ -65,13 +65,12 @@ var (
 
 // StartHost starts a host VM.
 func StartHost(api libmachine.API, cfg *config.ClusterConfig, n *config.Node) (*host.Host, bool, error) {
-	mabing.Logln(mabing.GenerateLongSignStart("StartHost()"))
+	mabing.Logln(mabing.GenerateLongSignStart("machine.StartHost()"))
 	machineName := driver.MachineName(*cfg, *n)
-	mabing.Logf("machineName = %+v", machineName)
+	mabing.Logf("mabing, machine.StartHost(), machineName = %+v", machineName)
 	// Prevent machine-driver boot races, as well as our own certificate race
 	releaser, err := acquireMachinesLock(machineName)
 	if err != nil {
-		mabing.Logln(mabing.GenerateLongSignEnd("StartHost()"))
 		return nil, false, errors.Wrap(err, "boot lock")
 	}
 	start := time.Now()
@@ -82,18 +81,17 @@ func StartHost(api libmachine.API, cfg *config.ClusterConfig, n *config.Node) (*
 
 	exists, err := api.Exists(machineName)
 	if err != nil {
-		mabing.Logln(mabing.GenerateLongSignEnd("StartHost()"))
 		return nil, false, errors.Wrapf(err, "exists: %s", machineName)
 	}
 	if !exists {
 		glog.Infof("Provisioning new machine with config: %+v %+v", cfg, n)
 		h, err := createHost(api, cfg, n)
-		mabing.Logln(mabing.GenerateLongSignEnd("StartHost()"))
+		mabing.Logln(mabing.GenerateLongSignEnd("machine.StartHost()"))
 		return h, exists, err
 	}
 	glog.Infoln("Skipping create...Using existing machine configuration")
 	h, err := fixHost(api, cfg, n)
-	mabing.Logln(mabing.GenerateLongSignEnd("StartHost()"))
+	mabing.Logln(mabing.GenerateLongSignEnd("machine.StartHost()"))
 	return h, exists, err
 }
 
@@ -125,7 +123,7 @@ func engineOptions(cfg config.ClusterConfig) *engine.Options {
 }
 
 func createHost(api libmachine.API, cfg *config.ClusterConfig, n *config.Node) (*host.Host, error) {
-	mabing.Logln(mabing.GenerateLongSignStart("createHost()"))
+	mabing.Logln(mabing.GenerateLongSignStart("machine.createHost()"))
 	glog.Infof("createHost starting for %q (driver=%q)", n.Name, cfg.Driver)
 	start := time.Now()
 	defer func() {
@@ -139,7 +137,7 @@ func createHost(api libmachine.API, cfg *config.ClusterConfig, n *config.Node) (
 			To disable this message, run [minikube config set ShowDriverDeprecationNotification false]`)
 	}
 	showHostInfo(*cfg)
-	mabing.Logf("mabing, createHost(), cfg.Driver = %+v", cfg.Driver)
+	mabing.Logf("mabing, machine.createHost(), cfg.Driver = %+v", cfg.Driver)
 	def := registry.Driver(cfg.Driver)
 	if def.Empty() {
 		mabing.Logln(mabing.GenerateLongSignEnd("createHost()"))
@@ -147,18 +145,15 @@ func createHost(api libmachine.API, cfg *config.ClusterConfig, n *config.Node) (
 	}
 	dd, err := def.Config(*cfg, *n)
 	if err != nil {
-		mabing.Logln(mabing.GenerateLongSignEnd("createHost()"))
 		return nil, errors.Wrap(err, "config")
 	}
 	data, err := json.Marshal(dd)
 	if err != nil {
-		mabing.Logln(mabing.GenerateLongSignEnd("createHost()"))
 		return nil, errors.Wrap(err, "marshal")
 	}
-	mabing.Logf("mabing, createHost(), data = %s", string(data))
+	mabing.Logf("mabing, machine.createHost(), data = %s", string(data))
 	h, err := api.NewHost(cfg.Driver, data)
 	if err != nil {
-		mabing.Logln(mabing.GenerateLongSignEnd("createHost()"))
 		return nil, errors.Wrap(err, "new host")
 	}
 
@@ -170,22 +165,20 @@ func createHost(api libmachine.API, cfg *config.ClusterConfig, n *config.Node) (
 	glog.Infof("libmachine.API.Create for %q (driver=%q)", cfg.Name, cfg.Driver)
 
 	if err := timedCreateHost(h, api, 4*time.Minute); err != nil {
-		mabing.Logln(mabing.GenerateLongSignEnd("createHost()"))
 		return nil, errors.Wrap(err, "creating host")
 	}
 	mabing.CheckDocker()
+	mabing.CheckPort()
 	glog.Infof("duration metric: libmachine.API.Create for %q took %s", cfg.Name, time.Since(cstart))
 
 	if err := postStartSetup(h, *cfg); err != nil {
-		mabing.Logln(mabing.GenerateLongSignEnd("createHost()"))
 		return h, errors.Wrap(err, "post-start")
 	}
 
 	if err := saveHost(api, h, cfg, n); err != nil {
-		mabing.Logln(mabing.GenerateLongSignEnd("createHost()"))
 		return h, err
 	}
-	mabing.Logln(mabing.GenerateLongSignEnd("createHost()"))
+	mabing.Logln(mabing.GenerateLongSignEnd("machine.createHost()"))
 	return h, nil
 }
 

@@ -24,6 +24,8 @@ import (
 	"strings"
 	"time"
 
+	"k8s.io/minikube/mabing"
+
 	"github.com/docker/machine/drivers/virtualbox"
 	"github.com/docker/machine/libmachine"
 	"github.com/docker/machine/libmachine/host"
@@ -49,6 +51,7 @@ const (
 
 // fixHost fixes up a previously configured VM so that it is ready to run Kubernetes
 func fixHost(api libmachine.API, cc *config.ClusterConfig, n *config.Node) (*host.Host, error) {
+	mabing.Logln(mabing.GenerateLongSignStart("machine.fixHost()"))
 	start := time.Now()
 	glog.Infof("fixHost starting: %s", n.Name)
 	defer func() {
@@ -92,7 +95,7 @@ func fixHost(api libmachine.API, cc *config.ClusterConfig, n *config.Node) (*hos
 		glog.Infof("%s is local, skipping auth/time setup (requires ssh)", driverName)
 		return h, nil
 	}
-
+	mabing.Logln(mabing.GenerateLongSignEnd("machine.fixHost()"))
 	return h, ensureSyncedGuestClock(h, driverName)
 }
 

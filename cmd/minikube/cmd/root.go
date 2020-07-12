@@ -154,7 +154,7 @@ func usageTemplate() string {
 // Handle config values for flags used in external packages (e.g. glog)
 // by setting them directly, using values from viper when not passed in as args
 func setFlagsUsingViper() {
-	fmt.Println("mabing, setFlagsUsingViper()")
+	mabing.Logln(mabing.GenerateLongSignStart("setFlagsUsingViper()"))
 	for _, item := range viperWhiteList {
 		var a = pflag.Lookup(item)
 		fmt.Printf("mabing, setFlagsUsingViper(),a.Name = `%+v`, a.Value.String() = `%+v` viper.GetString(a.Name) = `%+v`\n", a.Name, a.Value.String(), viper.GetString(a.Name))
@@ -171,6 +171,7 @@ func setFlagsUsingViper() {
 		}
 		a.Changed = true
 	}
+	mabing.Logln(mabing.GenerateLongSignEnd("setFlagsUsingViper()"))
 }
 
 func init() {
@@ -269,6 +270,7 @@ func initConfig() {
 }
 
 func setupViper() {
+	mabing.Logln(mabing.GenerateLongSignStart(" setupViper()"))
 	viper.SetEnvPrefix(minikubeEnvPrefix)
 	// Replaces '-' in flags with '_' in env variables
 	// e.g. iso-url => $ENVPREFIX_ISO_URL
@@ -284,6 +286,7 @@ func setupViper() {
 	viper.SetDefault(config.ShowDriverDeprecationNotification, true)
 	viper.SetDefault(config.ShowBootstrapperDeprecationNotification, true)
 	setFlagsUsingViper()
+	mabing.Logln(mabing.GenerateLongSignEnd(" setupViper()"))
 }
 
 func addToPath(dir string) {
