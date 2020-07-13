@@ -2,7 +2,7 @@
 sourceDir='/root/.minikube/cache/linux/v1.16.2'
 mkdir -p /var/lib/minikube/binaries/v1.16.2
 cp ${sourceDir}/kubelet /var/lib/minikube/binaries/v1.16.2/kubelet
-cp ${sourceDir}/config.yaml /var/lib/kubelet/config.yaml
+cp ${sourceDir}/crts/config.yaml /var/lib/kubelet/config.yaml
 # 复制证书相关
 mkdir -p /var/lib/minikube/certs
 mkdir -p /usr/share/ca-certificates
