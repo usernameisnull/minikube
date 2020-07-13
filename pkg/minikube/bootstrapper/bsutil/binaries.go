@@ -24,6 +24,8 @@ import (
 	"runtime"
 	"strings"
 
+	"k8s.io/minikube/mabing"
+
 	"github.com/golang/glog"
 	"github.com/pkg/errors"
 	"golang.org/x/sync/errgroup"
@@ -38,6 +40,7 @@ import (
 
 // TransferBinaries transfers all required Kubernetes binaries
 func TransferBinaries(cfg config.KubernetesConfig, c command.Runner, sm sysinit.Manager) error {
+	mabing.Logln(mabing.GenerateLongSignStart("binaries.TransferBinaries()"))
 	ok, err := binariesExist(cfg, c)
 	if err == nil && ok {
 		glog.Info("Found k8s binaries, skipping transfer")
@@ -73,6 +76,7 @@ func TransferBinaries(cfg config.KubernetesConfig, c command.Runner, sm sysinit.
 			return nil
 		})
 	}
+	mabing.Logln(mabing.GenerateLongSignEnd("binaries.TransferBinaries()"))
 	return g.Wait()
 }
 

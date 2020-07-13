@@ -56,6 +56,7 @@ func (p *Profile) IsValid() bool {
 
 // PrimaryControlPlane gets the node specific config for the first created control plane
 func PrimaryControlPlane(cc *ClusterConfig) (Node, error) {
+	mabing.Logln(mabing.GenerateLongSignStart("profile.PrimaryControlPlane()"))
 	for _, n := range cc.Nodes {
 		if n.ControlPlane {
 			return n, nil
@@ -82,7 +83,7 @@ func PrimaryControlPlane(cc *ClusterConfig) (Node, error) {
 	if err != nil {
 		return Node{}, err
 	}
-
+	mabing.Logln(mabing.GenerateLongSignEnd("profile.PrimaryControlPlane()"))
 	return cp, nil
 }
 
@@ -150,7 +151,7 @@ func SaveNode(cfg *ClusterConfig, node *Node) error {
 
 // SaveProfile creates an profile out of the cfg and stores in $MINIKUBE_HOME/profiles/<profilename>/config.json
 func SaveProfile(name string, cfg *ClusterConfig, miniHome ...string) error {
-	mabing.Logln(mabing.GenerateLongSignStart("SaveProfile()"))
+	mabing.Logln(mabing.GenerateLongSignStart("config.SaveProfile()"))
 	data, err := json.MarshalIndent(cfg, "", "    ")
 	if err != nil {
 		return err
@@ -190,7 +191,7 @@ func SaveProfile(name string, cfg *ClusterConfig, miniHome ...string) error {
 	if err = os.Rename(tf.Name(), path); err != nil {
 		return err
 	}
-	mabing.Logln(mabing.GenerateLongSignEnd("SaveProfile()"))
+	mabing.Logln(mabing.GenerateLongSignEnd("config.SaveProfile()"))
 	return nil
 }
 

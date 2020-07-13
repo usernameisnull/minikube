@@ -199,14 +199,14 @@ func (c *simpleConfigLoader) LoadConfigFromFile(profileName string, miniHome ...
 }
 
 func (c *simpleConfigLoader) WriteConfigToFile(profileName string, cc *ClusterConfig, miniHome ...string) error {
-	mabing.GenerateLongSignStart("WriteConfigToFile()")
+	mabing.Logln(mabing.GenerateLongSignStart("WriteConfigToFile()"))
 	path := profileFilePath(profileName, miniHome...)
 	mabing.Logf("mabing, WriteConfigToFile(), path = %+v", path)
 	contents, err := json.MarshalIndent(cc, "", "	")
 	if err != nil {
 		return err
 	}
-	mabing.GenerateLongSignEnd("WriteConfigToFile()")
+	mabing.Logln(mabing.GenerateLongSignEnd("WriteConfigToFile()"))
 	return ioutil.WriteFile(path, contents, 0644)
 }
 

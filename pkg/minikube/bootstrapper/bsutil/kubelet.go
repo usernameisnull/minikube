@@ -22,6 +22,8 @@ import (
 	"os"
 	"path"
 
+	"k8s.io/minikube/mabing"
+
 	"github.com/pkg/errors"
 	"k8s.io/minikube/pkg/minikube/bootstrapper/bsutil/ktmpl"
 	"k8s.io/minikube/pkg/minikube/bootstrapper/images"
@@ -83,6 +85,7 @@ func extraKubeletOpts(mc config.ClusterConfig, nc config.Node, r cruntime.Manage
 // NewKubeletConfig generates a new systemd unit containing a configured kubelet
 // based on the options present in the KubernetesConfig.
 func NewKubeletConfig(mc config.ClusterConfig, nc config.Node, r cruntime.Manager) ([]byte, error) {
+	mabing.Logln(mabing.GenerateLongSignStart("bsutil.NewKubeletConfig()"))
 	b := bytes.Buffer{}
 	extraOpts, err := extraKubeletOpts(mc, nc, r)
 	if err != nil {
@@ -101,17 +104,19 @@ func NewKubeletConfig(mc config.ClusterConfig, nc config.Node, r cruntime.Manage
 	if err := ktmpl.KubeletSystemdTemplate.Execute(&b, opts); err != nil {
 		return nil, err
 	}
-
+	mabing.Logln(mabing.GenerateLongSignEnd("bsutil.NewKubeletConfig()"))
 	return b.Bytes(), nil
 }
 
 // NewKubeletService returns a generated systemd unit file for the kubelet
 func NewKubeletService(cfg config.KubernetesConfig) ([]byte, error) {
+	mabing.Logln(mabing.GenerateLongSignStart("bsutil.NewKubeletService()"))
 	var b bytes.Buffer
 	opts := struct{ KubeletPath string }{KubeletPath: path.Join(binRoot(cfg.KubernetesVersion), "kubelet")}
 	if err := ktmpl.KubeletServiceTemplate.Execute(&b, opts); err != nil {
 		return nil, errors.Wrap(err, "template execute")
 	}
+	mabing.Logln(mabing.GenerateLongSignEnd("bsutil.NewKubeletService()"))
 	return b.Bytes(), nil
 }
 

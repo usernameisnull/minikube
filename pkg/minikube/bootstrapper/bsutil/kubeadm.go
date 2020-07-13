@@ -22,6 +22,8 @@ import (
 	"fmt"
 	"path"
 
+	"k8s.io/minikube/mabing"
+
 	"github.com/blang/semver"
 	"github.com/golang/glog"
 	"github.com/pkg/errors"
@@ -38,6 +40,7 @@ const remoteContainerRuntime = "remote"
 
 // GenerateKubeadmYAML generates the kubeadm.yaml file
 func GenerateKubeadmYAML(cc config.ClusterConfig, n config.Node, r cruntime.Manager) ([]byte, error) {
+	mabing.Logln(mabing.GenerateLongSignStart("bsuitl.GenerateKubeadmYAML()"))
 	k8s := cc.KubernetesConfig
 	version, err := util.ParseKubernetesVersion(k8s.KubernetesVersion)
 	if err != nil {
@@ -126,6 +129,7 @@ func GenerateKubeadmYAML(cc config.ClusterConfig, n config.Node, r cruntime.Mana
 		return nil, err
 	}
 	glog.Infof("kubeadm config:\n%s\n", b.String())
+	mabing.Logln(mabing.GenerateLongSignEnd("bsuitl.GenerateKubeadmYAML()"))
 	return b.Bytes(), nil
 }
 

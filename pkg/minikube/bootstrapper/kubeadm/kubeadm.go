@@ -172,6 +172,7 @@ func (k *Bootstrapper) clearStaleConfigs(cfg config.ClusterConfig) error {
 }
 
 func (k *Bootstrapper) init(cfg config.ClusterConfig) error {
+	mabing.Logln(mabing.GenerateLongSignStart("kubeadm.init"))
 	version, err := util.ParseKubernetesVersion(cfg.KubernetesConfig.KubernetesVersion)
 	if err != nil {
 		return errors.Wrap(err, "parsing Kubernetes version")
@@ -265,12 +266,13 @@ func (k *Bootstrapper) init(cfg config.ClusterConfig) error {
 	}()
 
 	wg.Wait()
+	mabing.Logln(mabing.GenerateLongSignEnd("kubeadm.init"))
 	return nil
 }
 
 // unpause unpauses any Kubernetes backplane components
 func (k *Bootstrapper) unpause(cfg config.ClusterConfig) error {
-	mabing.GenerateLongSignStart("kubeadm.unpause()")
+	mabing.Logln(mabing.GenerateLongSignStart("kubeadm.unpause()"))
 	cr, err := cruntime.New(cruntime.Config{Type: cfg.KubernetesConfig.ContainerRuntime, Runner: k.c})
 	if err != nil {
 		return err
@@ -286,7 +288,7 @@ func (k *Bootstrapper) unpause(cfg config.ClusterConfig) error {
 			return err
 		}
 	}
-	mabing.GenerateLongSignEnd("kubeadm.unpause()")
+	mabing.Logln(mabing.GenerateLongSignEnd("kubeadm.unpause()"))
 	return nil
 }
 
