@@ -108,7 +108,7 @@ var statusCmd = &cobra.Command{
 		api, cc := mustload.Partial(cname)
 
 		var statuses []*Status
-
+		mabing.Logf(`mabing, Run(), 第一个条件 = %+v`, nodeName != "" || statusFormat != defaultStatusFormat && len(cc.Nodes) > 1)
 		if nodeName != "" || statusFormat != defaultStatusFormat && len(cc.Nodes) > 1 {
 			n, _, err := node.Retrieve(*cc, nodeName)
 			if err != nil {

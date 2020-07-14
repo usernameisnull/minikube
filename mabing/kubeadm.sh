@@ -1,0 +1,2 @@
+#!/bin/bash
+env PATH=/root/.minikube/cache/linux/v1.16.2:$PATH kubeadm init --config /root/.minikube/cache/linux/v1.16.2/kubeadm.yaml --ignore-preflight-errors=DirAvailable--etc-kubernetes-manifests,DirAvailable--var-lib-minikube,DirAvailable--var-lib-minikube-etcd,FileAvailable--etc-kubernetes-manifests-kube-scheduler.yaml,FileAvailable--etc-kubernetes-manifests-kube-apiserver.yaml,FileAvailable--etc-kubernetes-manifests-kube-controller-manager.yaml,FileAvailable--etc-kubernetes-manifests-etcd.yaml,Port-10250,Swap
