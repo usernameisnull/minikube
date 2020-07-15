@@ -20,6 +20,8 @@ import (
 	"fmt"
 	"os/exec"
 
+	"k8s.io/minikube/mabing"
+
 	"github.com/docker/machine/libmachine/drivers"
 	"github.com/docker/machine/libmachine/state"
 	"github.com/golang/glog"
@@ -125,6 +127,7 @@ func (d *Driver) GetURL() (string, error) {
 
 // GetState returns the state that the host is in (running, stopped, etc)
 func (d *Driver) GetState() (state.State, error) {
+	mabing.Logln(mabing.GenerateLongSignStart("none.GetState()"))
 	hostname, port, err := kubeconfig.Endpoint(d.BaseDriver.MachineName)
 	if err != nil {
 		glog.Warningf("unable to get port: %v", err)
@@ -139,9 +142,10 @@ func (d *Driver) GetState() (state.State, error) {
 
 	// If the apiserver is up, we'll claim to be up.
 	if ast == state.Paused || ast == state.Running {
+		mabing.Logln(mabing.GenerateLongSignEnd("none.GetState().1"))
 		return state.Running, nil
 	}
-
+	mabing.Logln(mabing.GenerateLongSignEnd("none.GetState()"))
 	return kverify.KubeletStatus(d.exec), nil
 }
 

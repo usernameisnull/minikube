@@ -25,6 +25,8 @@ import (
 	"path/filepath"
 	"strconv"
 
+	"k8s.io/minikube/mabing"
+
 	"github.com/golang/glog"
 	"github.com/pkg/errors"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -38,6 +40,7 @@ import (
 
 // VerifyEndpoint verifies the IP:port stored in kubeconfig.
 func VerifyEndpoint(contextName string, hostname string, port int, configPath ...string) error {
+	mabing.Logln(mabing.GenerateLongSignStart("kubeconfig.VerifyEndpoint()"))
 	path := PathFromEnv()
 	if configPath != nil {
 		path = configPath[0]
@@ -55,7 +58,7 @@ func VerifyEndpoint(contextName string, hostname string, port int, configPath ..
 	if hostname != gotHostname || port != gotPort {
 		return fmt.Errorf("got: %s:%d, want: %s:%d", gotHostname, gotPort, hostname, port)
 	}
-
+	mabing.Logln(mabing.GenerateLongSignEnd("kubeconfig.VerifyEndpoint()"))
 	return nil
 }
 

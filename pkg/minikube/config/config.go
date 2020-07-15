@@ -190,7 +190,7 @@ func (c *simpleConfigLoader) LoadConfigFromFile(profileName string, miniHome ...
 	if err != nil {
 		return nil, errors.Wrap(err, "read")
 	}
-
+	mabing.Logln("mabing, LoadConfigFromFile(), data = ", string(data))
 	if err := json.Unmarshal(data, &cc); err != nil {
 		return nil, errors.Wrap(err, "unmarshal")
 	}

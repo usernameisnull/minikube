@@ -173,7 +173,7 @@ func exitCode(statuses []*Status) int {
 }
 
 func status(api libmachine.API, cc config.ClusterConfig, n config.Node) (*Status, error) {
-
+	mabing.Logln(mabing.GenerateLongSignStart("cmd.status()"))
 	controlPlane := n.ControlPlane
 	name := driver.MachineName(cc, n)
 
@@ -191,9 +191,9 @@ func status(api libmachine.API, cc config.ClusterConfig, n config.Node) (*Status
 	if err != nil {
 		return st, errors.Wrap(err, "host")
 	}
-
 	// We have no record of this host. Return nonexistent struct
 	if hs == state.None.String() {
+		mabing.Logf("mabing, cmd.status(), 返回, hs = `%s`, state.None.String() = `%s`", hs, state.None.String())
 		return st, nil
 	}
 	st.Host = hs
@@ -250,7 +250,7 @@ func status(api libmachine.API, cc config.ClusterConfig, n config.Node) (*Status
 			st.Kubeconfig = Misconfigured
 		}
 	}
-
+	mabing.Logln("mabing, cmd.status(), after driver.ControlPlaneEndpoint()")
 	sta, err := kverify.APIServerStatus(cr, hostname, port)
 	glog.Infof("%s apiserver status = %s (err=%v)", name, stk, err)
 
@@ -260,7 +260,7 @@ func status(api libmachine.API, cc config.ClusterConfig, n config.Node) (*Status
 	} else {
 		st.APIServer = sta.String()
 	}
-
+	mabing.Logln(mabing.GenerateLongSignEnd("cmd.status()"))
 	return st, nil
 }
 

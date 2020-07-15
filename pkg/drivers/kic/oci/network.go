@@ -24,6 +24,8 @@ import (
 	"strconv"
 	"strings"
 
+	"k8s.io/minikube/mabing"
+
 	"github.com/golang/glog"
 	"github.com/pkg/errors"
 )
@@ -94,6 +96,7 @@ func containerGatewayIP(ociBin, containerName string) (net.IP, error) {
 // 32769, nil
 // only supports TCP ports
 func ForwardedPort(ociBin string, ociID string, contPort int) (int, error) {
+	mabing.Logln(mabing.GenerateLongSignStart("oci.ForwardedPort()"))
 	var rr *RunResult
 	var err error
 
@@ -116,7 +119,7 @@ func ForwardedPort(ociBin string, ociID string, contPort int) (int, error) {
 	if err != nil {
 		return p, errors.Wrapf(err, "convert host-port %q to number", p)
 	}
-
+	mabing.Logln(mabing.GenerateLongSignEnd("oci.ForwardedPort()"))
 	return p, nil
 }
 

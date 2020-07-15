@@ -17,4 +17,11 @@ cp ${crtsDir}/ca.key /var/lib/minikube/certs/ca.key
 cp ${crtsDir}/proxy-client-ca.crt /var/lib/minikube/certs/proxy-client-ca.crt 
 cp ${crtsDir}/proxy-client-ca.key /var/lib/minikube/certs/proxy-client-ca.key
 cp ${crtsDir}/ca.crt /usr/share/ca-certificates/minikubeCA.pem
+configJsonPath='/root/.minikube/profiles/minikube'
+mkdir -p ${configJsonPath}
+cp ${sourceDir}/config.json ${configJsonPath}/config.json
 
+# 把machine-config.json复制到默认的目录
+machineDir='/root/.minikube/machines/minikube'
+mkdir -p ${machineDir}
+cp ${sourceDir}/machine-config.json ${machineDir}/config.json

@@ -22,11 +22,13 @@ import (
 	"github.com/docker/machine/libmachine/state"
 	"github.com/golang/glog"
 	"github.com/pkg/errors"
+	"k8s.io/minikube/mabing"
 )
 
 // Status returns the status of a libmachine host
 func Status(api libmachine.API, machineName string) (string, error) {
-	exists, err := api.Exists(machineName)
+	mabing.Logln(mabing.GenerateLongSignStart("machine.Status()"))
+	exists, err := api.Exists(machineName) // mabing: 下一步-> github.com/machine-drivers/libmachine/persist/filestore.go
 	if err != nil {
 		return "", errors.Wrapf(err, "%s exists", machineName)
 	}
@@ -38,11 +40,13 @@ func Status(api libmachine.API, machineName string) (string, error) {
 	if err != nil {
 		return "", errors.Wrapf(err, "load")
 	}
-
+	mabing.Logln("mabing, machine.Status(), api.Load完成")
+	mabing.Logf("mabing, machine.Status(), host.Driver = %+v", host.Driver)
 	s, err := host.Driver.GetState()
 	if err != nil {
 		return "", errors.Wrap(err, "state")
 	}
+	mabing.Logln(mabing.GenerateLongSignEnd("machine.Status()"))
 	return s.String(), nil
 }
 

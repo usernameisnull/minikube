@@ -19,6 +19,8 @@ package driver
 import (
 	"net"
 
+	"k8s.io/minikube/mabing"
+
 	"k8s.io/minikube/pkg/drivers/kic/oci"
 	"k8s.io/minikube/pkg/minikube/config"
 	"k8s.io/minikube/pkg/minikube/constants"
@@ -26,6 +28,8 @@ import (
 
 // ControlPlaneEndpoint returns the location where callers can reach this cluster
 func ControlPlaneEndpoint(cc *config.ClusterConfig, cp *config.Node, driverName string) (string, net.IP, int, error) {
+	mabing.Logln(mabing.GenerateLongSignStart("driver.ControlPlaneEndpoint()"))
+	mabing.Logf("mabing, driver.ControlPlaneEndpoint(), NeedsPortForward(driverName) = %+v", NeedsPortForward(driverName))
 	if NeedsPortForward(driverName) {
 		port, err := oci.ForwardedPort(cc.Driver, cc.Name, cp.Port)
 		hostname := oci.DefaultBindIPV4
@@ -43,5 +47,6 @@ func ControlPlaneEndpoint(cc *config.ClusterConfig, cp *config.Node, driverName 
 	if cc.KubernetesConfig.APIServerName != constants.APIServerName {
 		hostname = cc.KubernetesConfig.APIServerName
 	}
+	mabing.Logln(mabing.GenerateLongSignEnd("driver.ControlPlaneEndpoint()"))
 	return hostname, net.ParseIP(cp.IP), cp.Port, nil
 }

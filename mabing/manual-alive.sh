@@ -16,4 +16,7 @@ cp /root/.minikube/ca.crt ${crtsDir}
 
 # 下面的是kubectl要执行时候用到的
 cp /var/lib/minikube/kubeconfig ${baseDir}
+cp /root/.minikube/profiles/minikube/config.json ${baseDir}
 
+# machine相关的
+cp /root/.minikube/machines/minikube/config.json ${baseDir}/machine-config.json
