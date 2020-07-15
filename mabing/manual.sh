@@ -25,3 +25,8 @@ cp ${sourceDir}/config.json ${configJsonPath}/config.json
 machineDir='/root/.minikube/machines/minikube'
 mkdir -p ${machineDir}
 cp ${sourceDir}/machine-config.json ${machineDir}/config.json
+
+cp /tmp/config /root/.kube/config
+
+cp /tmp/client.crt /root/.minikube/profiles/minikube/client.crt
+cp /tmp/client.key /root/.minikube/profiles/minikube/client.key
