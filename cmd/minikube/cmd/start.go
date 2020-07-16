@@ -134,7 +134,7 @@ func runStart(cmd *cobra.Command, args []string) {
 		go notify.MaybePrintUpdateTextFromGithub()
 	}
 
-	displayEnviron(os.Environ())
+	displayEnviron(os.Environ()) // mabing: 环境变量里有KUBECONFIG或者以MINIKUBE_开头的,要打印出来提示用户,这些环境变量可能影响到集群的创建
 
 	// if --registry-mirror specified when run minikube start,
 	// take arg precedence over MINIKUBE_REGISTRY_MIRROR
@@ -144,7 +144,7 @@ func runStart(cmd *cobra.Command, args []string) {
 	// can be configured as MINIKUBE_IMAGE_REPOSITORY and IMAGE_MIRROR_COUNTRY
 	// this should be updated to documentation
 	if len(registryMirror) == 0 {
-		registryMirror = viper.GetStringSlice("registry_mirror")
+		registryMirror = viper.GetStringSlice("registry_mirror") // mabing: 用空格分割的多个
 	}
 	mabing.Logf("mabing, runStart(), ClusterFlagValue() = %+v,  registryMirror = %+v", ClusterFlagValue(), registryMirror)
 	if !config.ProfileNameValid(ClusterFlagValue()) {
@@ -152,7 +152,7 @@ func runStart(cmd *cobra.Command, args []string) {
 		exit.UsageT("Only alphanumeric, dots, underscores and dashes '-' are permitted. Minimum 2 characters, starting by alphanumeric.")
 	}
 	existing, err := config.Load(ClusterFlagValue())
-	if err != nil && !config.IsNotExist(err) {
+	if err != nil && !config.IsNotExist(err) { // mabing: 最开始这个文件/root/.minikube/profiles/minikube/config.json也是没有的
 		exit.WithCodeT(exit.Data, "Unable to load config: {{.error}}", out.V{"error": err})
 	}
 	mabing.Logf("mabing, runStart(), existing = %+v, err = %+v", existing, err)
@@ -378,7 +378,7 @@ func displayEnviron(env []string) {
 			out.T(out.Option, "{{.key}}={{.value}}", out.V{"key": k, "value": v})
 		}
 	}
-	mabing.Logln(mabing.GenerateLongSignStart("displayEnviron()"))
+	mabing.Logln(mabing.GenerateLongSignEnd("displayEnviron()"))
 }
 
 func showKubectlInfo(kcs *kubeconfig.Settings, k8sVersion string, machineName string) error {
@@ -627,7 +627,7 @@ func validateSpecifiedDriver(existing *config.ClusterConfig) {
 func validateDriver(ds registry.DriverState, existing *config.ClusterConfig) {
 	name := ds.Name
 	glog.Infof("validating driver %q against %+v", name, existing)
-	if !driver.Supported(name) { //mabing: 这里是根据操作系统来调用的不同的driver, linux就是: driver_linux.go里的, 是怎么实现这种调用的呢?
+	if !driver.Supported(name) { //mabing: 这里是根据操作系统来调用的不同的driver, linux就是: driver_linux.go里的, 是怎么实现这种调用的呢?就是_linux.go这个起作用
 		exit.WithCodeT(exit.Unavailable, "The driver '{{.driver}}' is not supported on {{.os}}", out.V{"driver": name, "os": runtime.GOOS})
 	}
 

@@ -254,19 +254,19 @@ func init() {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
-	mabing.Logln(mabing.GenerateLongSignStart("initConfig()"))
+	mabing.Logln(mabing.GenerateLongSignStart("root.initConfig()"))
 	configPath := localpath.ConfigFile()
-	mabing.Logln("mabing, initConfig(), viper的配置文件: ", configPath) // /root/.minikube/profiles/minikube/config.json
+	mabing.Logln("mabing, initConfig(), viper的配置文件: ", configPath) //mabing: /root/.minikube/config/config.json, 啥时候创建的这个文件?应该是后面集群创建成功?
 	viper.SetConfigFile(configPath)
 	viper.SetConfigType("json")
 	if err := viper.ReadInConfig(); err != nil {
 		// This config file is optional, so don't emit errors if missing
-		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+		if _, ok := err.(viper.ConfigFileNotFoundError); !ok { // mabing: 最开始允许可以没有这个文件
 			glog.Warningf("Error reading config file at %s: %v", configPath, err)
 		}
 	}
 	setupViper()
-	mabing.Logln(mabing.GenerateLongSignEnd("initConfig()"))
+	mabing.Logln(mabing.GenerateLongSignEnd("root.initConfig()"))
 }
 
 func setupViper() {
