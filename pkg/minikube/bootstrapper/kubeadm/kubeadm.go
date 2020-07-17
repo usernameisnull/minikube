@@ -171,7 +171,7 @@ func (k *Bootstrapper) clearStaleConfigs(cfg config.ClusterConfig) error {
 	return nil
 }
 
-func (k *Bootstrapper) init(cfg config.ClusterConfig) error {
+func (k *Bootstrapper) init(cfg config.ClusterConfig) error { // mabing: 这里是start命令最终的落脚点
 	mabing.Logln(mabing.GenerateLongSignStart("kubeadm.init"))
 	version, err := util.ParseKubernetesVersion(cfg.KubernetesConfig.KubernetesVersion)
 	if err != nil {
@@ -295,8 +295,6 @@ func (k *Bootstrapper) unpause(cfg config.ClusterConfig) error {
 // StartCluster starts the cluster
 func (k *Bootstrapper) StartCluster(cfg config.ClusterConfig) error { // mabing: 就是在这里kube-system命名空间的容器都起来了
 	mabing.Logln(mabing.GenerateLongSignStart("kubeadm.StartCluster()"))
-	mabing.CheckPort()
-	mabing.CheckDocker()
 	start := time.Now()
 	glog.Infof("StartCluster: %+v", cfg)
 	defer func() {
@@ -330,7 +328,6 @@ func (k *Bootstrapper) StartCluster(cfg config.ClusterConfig) error { // mabing:
 
 	err := k.init(cfg)
 	if err == nil {
-		mabing.CheckPort()
 		mabing.CheckDocker()
 		mabing.Logln(mabing.GenerateLongSignEnd("kubeadm.StartCluster()"))
 		return nil

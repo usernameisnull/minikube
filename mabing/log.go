@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"os/exec"
+	"time"
 
 	"github.com/golang/glog"
 )
@@ -30,6 +31,7 @@ func Fmtf(format string, a ...interface{}) {
 }
 
 func CheckDocker() {
+	time.Sleep(time.Second * 60)
 	Fmtln("====================, CheckDocker ")
 	// docker ps --format "{{.Names}}"
 	command := exec.Command("docker", "ps", "--format", `"{{.Names}}"`)

@@ -288,7 +288,7 @@ func provisionWithDriver(cmd *cobra.Command, ds registry.DriverState, existing *
 
 func startWithDriver(starter node.Starter, existing *config.ClusterConfig) (*kubeconfig.Settings, error) {
 	mabing.Logln(mabing.GenerateLongSignStart("startWithDriver()"))
-	kubeconfig, err := node.Start(starter, true)
+	kubeconfig, err := node.Start(starter, true) // mabing: 启动kube-system命名空间的容器
 	if err != nil {
 		kubeconfig, err = maybeDeleteAndRetry(*starter.Cfg, *starter.Node, starter.ExistingAddons, err)
 		if err != nil {

@@ -111,7 +111,7 @@ func Start(starter Starter, apiServer bool) (*kubeconfig.Settings, error) {
 
 		// setup kubeadm (must come after setupKubeconfig)
 		bs = setupKubeAdm(starter.MachineAPI, *starter.Cfg, *starter.Node, starter.Runner)
-		err = bs.StartCluster(*starter.Cfg)
+		err = bs.StartCluster(*starter.Cfg) // mabing: kubeadm.StartCluster,就是在这里启动了kube-system空间的容器
 
 		if err != nil {
 			out.LogEntries("Error starting cluster", err, logs.FindProblems(cr, bs, *starter.Cfg, starter.Runner))
@@ -183,6 +183,7 @@ func Start(starter Starter, apiServer bool) (*kubeconfig.Settings, error) {
 	}
 
 	wg.Wait()
+	mabing.CheckDocker()
 	mabing.Logln(mabing.GenerateLongSignEnd("node.Start()"))
 	// Write enabled addons to the config before completion
 	return kcs, config.Write(viper.GetString(config.ProfileName), starter.Cfg)
