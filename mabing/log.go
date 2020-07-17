@@ -42,7 +42,7 @@ func CheckDocker() {
 	if err = command.Wait(); err != nil {
 		Fmtf("错误: `%s`\n", err.Error())
 	} else {
-		Fmtln("docker进程号: ", command.ProcessState.Pid())
+		Fmtln("执行命令的进程号: ", command.ProcessState.Pid())
 		//fmt.Println(command.ProcessState.Sys().(syscall.WaitStatus).ExitCode)
 		Fmtln(outinfo.String())
 	}

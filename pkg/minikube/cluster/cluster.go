@@ -68,6 +68,7 @@ func Bootstrapper(api libmachine.API, bootstrapperName string, cc config.Cluster
 
 // ControlPlaneBootstrapper returns the bootstrapper for the cluster's control plane
 func ControlPlaneBootstrapper(mAPI libmachine.API, cc *config.ClusterConfig, bootstrapperName string) (bootstrapper.Bootstrapper, error) {
+	mabing.Logln(mabing.GenerateLongSignStart("cluster.ControlPlaneBootstrapper()"))
 	cp, err := config.PrimaryControlPlane(cc)
 	if err != nil {
 		return nil, errors.Wrap(err, "getting primary control plane")
@@ -80,6 +81,6 @@ func ControlPlaneBootstrapper(mAPI libmachine.API, cc *config.ClusterConfig, boo
 	if err != nil {
 		return nil, errors.Wrap(err, "getting control plane command runner")
 	}
-
+	mabing.Logln(mabing.GenerateLongSignEnd("cluster.ControlPlaneBootstrapper()"))
 	return Bootstrapper(mAPI, bootstrapperName, *cc, cpr)
 }

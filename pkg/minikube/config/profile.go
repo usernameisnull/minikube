@@ -55,7 +55,7 @@ func (p *Profile) IsValid() bool {
 }
 
 // PrimaryControlPlane gets the node specific config for the first created control plane
-func PrimaryControlPlane(cc *ClusterConfig) (Node, error) {
+func PrimaryControlPlane(cc *ClusterConfig) (Node, error) { // mabing: 这个被调用了多次1. bsuitl.GenerateKubeadmYAML(), 2. kubeadm.UpdateNode() 3. cluster.ControlPlaneBootstrapper
 	mabing.Logln(mabing.GenerateLongSignStart("profile.PrimaryControlPlane()"))
 	for _, n := range cc.Nodes {
 		if n.ControlPlane {
@@ -127,6 +127,7 @@ func CreateEmptyProfile(name string, miniHome ...string) error {
 
 // SaveNode saves a node to a cluster
 func SaveNode(cfg *ClusterConfig, node *Node) error {
+	mabing.GenerateLongSignStart("config.SaveNode()")
 	update := false
 	for i, n := range cfg.Nodes {
 		if n.Name == node.Name {
@@ -145,7 +146,7 @@ func SaveNode(cfg *ClusterConfig, node *Node) error {
 			return err
 		}
 	}
-
+	mabing.GenerateLongSignEnd("config.SaveNode()")
 	return SaveProfile(viper.GetString(ProfileName), cfg)
 }
 

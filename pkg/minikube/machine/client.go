@@ -25,6 +25,8 @@ import (
 	"path/filepath"
 	"time"
 
+	"k8s.io/minikube/mabing"
+
 	"github.com/docker/machine/libmachine"
 	"github.com/docker/machine/libmachine/auth"
 	"github.com/docker/machine/libmachine/cert"
@@ -81,6 +83,7 @@ type LocalClient struct {
 
 // NewHost creates a new Host
 func (api *LocalClient) NewHost(drvName string, rawDriver []byte) (*host.Host, error) {
+	mabing.Logln(mabing.GenerateLongSignStart("client.NewHost"))
 	def := registry.Driver(drvName)
 	if def.Empty() {
 		return nil, fmt.Errorf("driver %q does not exist", drvName)
@@ -93,7 +96,7 @@ func (api *LocalClient) NewHost(drvName string, rawDriver []byte) (*host.Host, e
 	if err != nil {
 		return nil, errors.Wrapf(err, "Error getting driver %s", string(rawDriver))
 	}
-
+	mabing.Logln(mabing.GenerateLongSignEnd("client.NewHost"))
 	return &host.Host{
 		ConfigVersion: version.ConfigVersion,
 		Name:          d.GetMachineName(),

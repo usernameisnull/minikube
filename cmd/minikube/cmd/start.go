@@ -144,7 +144,7 @@ func runStart(cmd *cobra.Command, args []string) {
 	// can be configured as MINIKUBE_IMAGE_REPOSITORY and IMAGE_MIRROR_COUNTRY
 	// this should be updated to documentation
 	if len(registryMirror) == 0 {
-		registryMirror = viper.GetStringSlice("registry_mirror") // mabing: 用空格分割的多个
+		registryMirror = viper.GetStringSlice("registry_mirror") // mabing: registry_mirror是命令行用空格分割的多个值
 	}
 	mabing.Logf("mabing, runStart(), ClusterFlagValue() = %+v,  registryMirror = %+v", ClusterFlagValue(), registryMirror)
 	if !config.ProfileNameValid(ClusterFlagValue()) {
@@ -495,7 +495,7 @@ func selectDriver(existing *config.ClusterConfig) (registry.DriverState, []regis
 
 	// By default, the driver is whatever we used last time
 	if existing != nil {
-		old := hostDriver(existing)
+		old := hostDriver(existing) // mabing: validateSpecifiedDriver函数里已经有过old := hostDriver(existing)调用了,这种反反复复的调用真的好么?
 		ds := driver.Status(old)
 		out.T(out.Sparkle, `Using the {{.driver}} driver based on existing profile`, out.V{"driver": ds.String()})
 		return ds, nil, true
@@ -724,7 +724,7 @@ func validateUser(drvName string) {
 		exit.WithCodeT(exit.Permissions, `The "{{.driver_name}}" driver requires root privileges. Please run minikube using 'sudo minikube start --driver={{.driver_name}}'.`, out.V{"driver_name": drvName})
 	}
 
-	if driver.NeedsRoot(drvName) || u.Uid != "0" {
+	if driver.NeedsRoot(drvName) || u.Uid != "0" { // mabing: 要求非root用户, 但是是root账号
 		return
 	}
 

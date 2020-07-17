@@ -101,6 +101,7 @@ func Start(starter Starter, apiServer bool) (*kubeconfig.Settings, error) {
 	mabing.Logln("mabing, node.Start(), hostIP = ", hostIP, "apiServer = ", apiServer)
 	var bs bootstrapper.Bootstrapper
 	var kcs *kubeconfig.Settings
+	mabing.Logf("mabing, node.Start(), apiServer = %+v", apiServer)
 	if apiServer {
 		// Must be written before bootstrap, otherwise health checks may flake due to stale IP
 		kcs = setupKubeconfig(starter.Host, starter.Cfg, starter.Node, starter.Cfg.Name)

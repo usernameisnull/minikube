@@ -81,6 +81,7 @@ func NewDriver(c Config) *Driver {
 
 // PreCreateCheck checks for correct privileges and dependencies
 func (d *Driver) PreCreateCheck() error {
+	mabing.Logln("mabing, PreCreateCheck()")
 	return d.runtime.Available()
 }
 

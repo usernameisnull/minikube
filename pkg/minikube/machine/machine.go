@@ -19,6 +19,8 @@ package machine
 import (
 	"time"
 
+	"k8s.io/minikube/mabing"
+
 	"github.com/docker/machine/libmachine"
 	"github.com/docker/machine/libmachine/host"
 	libprovision "github.com/docker/machine/libmachine/provision"
@@ -113,6 +115,7 @@ func fastDetectProvisioner(h *host.Host) (libprovision.Provisioner, error) {
 
 // saveHost is a wrapper around libmachine's Save function to proactively update the node's IP whenever a host is saved
 func saveHost(api libmachine.API, h *host.Host, cfg *config.ClusterConfig, n *config.Node) error {
+	mabing.Logln(mabing.GenerateLongSignStart("machine.saveHost"))
 	if err := api.Save(h); err != nil {
 		return errors.Wrap(err, "save")
 	}
@@ -123,5 +126,6 @@ func saveHost(api libmachine.API, h *host.Host, cfg *config.ClusterConfig, n *co
 		return err
 	}
 	n.IP = ip
+	mabing.Logln(mabing.GenerateLongSignEnd("machine.saveHost"))
 	return config.SaveNode(cfg, n)
 }

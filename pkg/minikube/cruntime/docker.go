@@ -95,6 +95,7 @@ func (r *Docker) DefaultCNI() bool {
 
 // Available returns an error if it is not possible to use this runtime on a host
 func (r *Docker) Available() error {
+	mabing.Logln("mabing, Available()")
 	_, err := exec.LookPath("docker")
 	return err
 }

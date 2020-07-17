@@ -167,10 +167,7 @@ func createHost(api libmachine.API, cfg *config.ClusterConfig, n *config.Node) (
 	if err := timedCreateHost(h, api, 4*time.Minute); err != nil {
 		return nil, errors.Wrap(err, "creating host")
 	}
-	mabing.CheckDocker()
-	mabing.CheckPort()
 	glog.Infof("duration metric: libmachine.API.Create for %q took %s", cfg.Name, time.Since(cstart))
-
 	if err := postStartSetup(h, *cfg); err != nil {
 		return h, errors.Wrap(err, "post-start")
 	}
@@ -183,6 +180,7 @@ func createHost(api libmachine.API, cfg *config.ClusterConfig, n *config.Node) (
 }
 
 func timedCreateHost(h *host.Host, api libmachine.API, t time.Duration) error {
+	mabing.Logln(mabing.GenerateLongSignStart("start.timedCreateHost"))
 	timeout := make(chan bool, 1)
 	go func() {
 		time.Sleep(t)
@@ -192,10 +190,10 @@ func timedCreateHost(h *host.Host, api libmachine.API, t time.Duration) error {
 	createFinished := make(chan bool, 1)
 	var err error
 	go func() {
-		err = api.Create(h)
+		err = api.Create(h) // mabing: machine.Create
 		createFinished <- true
 	}()
-
+	mabing.Logln(mabing.GenerateLongSignEnd("start.timedCreateHost"))
 	select {
 	case <-createFinished:
 		if err != nil {

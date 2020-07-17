@@ -177,7 +177,7 @@ func FlagDefaults(name string) FlagHints {
 	if _, err := os.Stat(systemdResolvConf); err == nil {
 		noneEO := fmt.Sprintf("kubelet.resolv-conf=%s", systemdResolvConf)
 		fh.ExtraOptions = append(fh.ExtraOptions, noneEO)
-		mabing.Logln(mabing.GenerateLongSignEnd("FlagDefaults()"))
+		mabing.Logln(mabing.GenerateLongSignEnd("FlagDefaults(), /run/systemd/resolve/resolv.conf 存在"))
 		return fh
 	}
 	mabing.Logln(mabing.GenerateLongSignEnd("FlagDefaults()"))
