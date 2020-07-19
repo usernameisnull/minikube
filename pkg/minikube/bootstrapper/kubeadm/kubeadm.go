@@ -326,9 +326,9 @@ func (k *Bootstrapper) StartCluster(cfg config.ClusterConfig) error { // mabing:
 		return errors.Wrap(err, "cp")
 	}
 
-	err := k.init(cfg)
+	err := k.init(cfg) // mabing: 这个时候还没有storage相关的pod
 	if err == nil {
-		mabing.CheckDocker()
+		mabing.CheckDocker("1")
 		mabing.Logln(mabing.GenerateLongSignEnd("kubeadm.StartCluster()"))
 		return nil
 	}

@@ -183,7 +183,7 @@ func Start(starter Starter, apiServer bool) (*kubeconfig.Settings, error) {
 	}
 
 	wg.Wait()
-	mabing.CheckDocker()
+	mabing.CheckDocker("2")
 	mabing.Logln(mabing.GenerateLongSignEnd("node.Start()"))
 	// Write enabled addons to the config before completion
 	return kcs, config.Write(viper.GetString(config.ProfileName), starter.Cfg)

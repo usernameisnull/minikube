@@ -26,6 +26,8 @@ import (
 	"sync"
 	"time"
 
+	"k8s.io/minikube/mabing"
+
 	"github.com/golang/glog"
 	"github.com/pkg/errors"
 
@@ -313,6 +315,7 @@ func enableOrDisableStorageClasses(cc *config.ClusterConfig, name string, val st
 
 // Start enables the default addons for a profile, plus any additional
 func Start(wg *sync.WaitGroup, cc *config.ClusterConfig, toEnable map[string]bool, additional []string) {
+	mabing.Logln(mabing.GenerateLongSignStart("addons.Start()"))
 	wg.Add(1)
 	defer wg.Done()
 
@@ -368,4 +371,5 @@ func Start(wg *sync.WaitGroup, cc *config.ClusterConfig, toEnable map[string]boo
 			glog.Errorf("store failed: %v", err)
 		}
 	}
+	mabing.Logln(mabing.GenerateLongSignEnd("addons.Start()"))
 }

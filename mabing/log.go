@@ -30,9 +30,9 @@ func Fmtf(format string, a ...interface{}) {
 	fmt.Printf("mabing, "+format, a)
 }
 
-func CheckDocker() {
+func CheckDocker(s string) {
 	time.Sleep(time.Second * 60)
-	Fmtln("====================, CheckDocker ")
+	Fmtf("====================, CheckDocker.%s", s)
 	// docker ps --format "{{.Names}}"
 	command := exec.Command("docker", "ps", "--format", `"{{.Names}}"`)
 	outinfo := bytes.Buffer{}
