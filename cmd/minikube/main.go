@@ -52,6 +52,7 @@ var (
 )
 
 func main() {
+	fmt.Println("---------------------main() begin---------------------------")
 	bridgeLogMessages()
 	defer glog.Flush()
 	if os.Getenv(minikubeEnableProfile) == "1" {

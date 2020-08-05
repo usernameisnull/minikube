@@ -144,7 +144,7 @@ func runStart(cmd *cobra.Command, args []string) {
 	// can be configured as MINIKUBE_IMAGE_REPOSITORY and IMAGE_MIRROR_COUNTRY
 	// this should be updated to documentation
 	if len(registryMirror) == 0 {
-		registryMirror = viper.GetStringSlice("registry_mirror") // mabing: registry_mirror是命令行用空格分割的多个值
+		registryMirror = viper.GetStringSlice("registry_mirror") // mabing: registry-mirror是命令行用空格分割的多个值, --registry-mirror=https://ust2rq86.mirror.aliyuncs.com
 	}
 	mabing.Logf("mabing, runStart(), ClusterFlagValue() = %+v,  registryMirror = %+v", ClusterFlagValue(), registryMirror)
 	if !config.ProfileNameValid(ClusterFlagValue()) {
@@ -619,8 +619,8 @@ func validateSpecifiedDriver(existing *config.ClusterConfig) {
 2) Start the existing "{{.name}}" cluster using: '{{.command}} --driver={{.old}}'
 `, out.V{"command": mustload.ExampleCmd(existing.Name, "start"), "delcommand": mustload.ExampleCmd(existing.Name, "delete"), "old": old, "name": existing.Name})
 
-	exit.WithCodeT(exit.Config, "Exiting.")
 	mabing.Logln(mabing.GenerateLongSignEnd("validateSpecifiedDriver"))
+	exit.WithCodeT(exit.Config, "Exiting.")
 }
 
 // validateDriver validates that the selected driver appears sane, exits if not
@@ -1035,7 +1035,6 @@ func getKubernetesVersion(old *config.ClusterConfig) string {
 		if old.Name != constants.DefaultClusterName {
 			profileArg = fmt.Sprintf(" -p %s", old.Name)
 		}
-
 		suggestedName := old.Name + "2"
 		out.T(out.Conflict, "You have selected Kubernetes {{.new}}, but the existing cluster is running Kubernetes {{.old}}", out.V{"new": nvs, "old": ovs, "profile": profileArg})
 		exit.WithCodeT(exit.Config, `Non-destructive downgrades are not supported, but you can proceed with one of the following options:
